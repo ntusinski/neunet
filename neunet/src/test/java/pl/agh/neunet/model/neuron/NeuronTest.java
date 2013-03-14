@@ -1,9 +1,12 @@
-package pl.agh.neunet.neuron;
+package pl.agh.neunet.model.neuron;
 
 import java.awt.Dimension;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import pl.agh.neunet.model.neuron.Neuron;
+import pl.agh.neunet.model.neuron.SimpleNeuron;
 
 public class NeuronTest {
 	@Test
