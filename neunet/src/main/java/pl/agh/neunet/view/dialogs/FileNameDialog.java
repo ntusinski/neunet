@@ -12,7 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import pl.agh.neunet.action.ActionType;
+import pl.agh.neunet.shared.action.ActionType;
 import pl.agh.neunet.viewmodel.impl.NeuronNetVM;
 
 public class FileNameDialog extends JDialog {

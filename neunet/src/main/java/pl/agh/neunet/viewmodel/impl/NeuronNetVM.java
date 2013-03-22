@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import pl.agh.neunet.action.ActionType;
 import pl.agh.neunet.model.net.NeuronNetModel;
+import pl.agh.neunet.shared.action.ActionType;
 import pl.agh.neunet.viewmodel.ModelObserver;
 
 public class NeuronNetVM implements pl.agh.neunet.viewmodel.NeuronNetVM {

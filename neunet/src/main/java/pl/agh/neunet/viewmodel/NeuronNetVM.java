@@ -2,7 +2,7 @@ package pl.agh.neunet.viewmodel;
 
 import java.util.Map;
 
-import pl.agh.neunet.action.ActionType;
+import pl.agh.neunet.shared.action.ActionType;
 
 public interface NeuronNetVM {
 	void registerModelObserver(ModelObserver observer);

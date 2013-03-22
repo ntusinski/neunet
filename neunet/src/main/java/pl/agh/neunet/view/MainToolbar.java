@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import pl.agh.neunet.action.ActionType;
+import pl.agh.neunet.shared.action.ActionType;
 import pl.agh.neunet.view.dialogs.FileNameDialog;
 
 public class MainToolbar extends JMenuBar {

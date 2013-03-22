@@ -7,8 +7,8 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import pl.agh.neunet.action.ActionGroup;
-import pl.agh.neunet.action.ActionType;
+import pl.agh.neunet.shared.action.ActionGroup;
+import pl.agh.neunet.shared.action.ActionType;
 
 public class PropertiesFileManager implements ActionTaker {
 	private static final String FILENAME_ARGUMENT_NAME = "filename";

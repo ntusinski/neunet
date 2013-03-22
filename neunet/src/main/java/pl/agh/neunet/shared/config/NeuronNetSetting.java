@@ -1,4 +1,4 @@
-package pl.agh.neunet.viewmodel.config;
+package pl.agh.neunet.shared.config;
 
 import pl.agh.neunet.viewmodel.neuron.Neuron;
 

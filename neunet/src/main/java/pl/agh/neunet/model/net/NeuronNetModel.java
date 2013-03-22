@@ -2,7 +2,7 @@ package pl.agh.neunet.model.net;
 
 import java.util.Map;
 
-import pl.agh.neunet.action.ActionType;
+import pl.agh.neunet.shared.action.ActionType;
 import pl.agh.neunet.viewmodel.impl.NeuronNetVM;
 
 public class NeuronNetModel implements ActionTaker {

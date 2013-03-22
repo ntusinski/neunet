@@ -1,4 +1,4 @@
-package pl.agh.neunet.action;
+package pl.agh.neunet.shared.action;
 
 public enum ActionType {
 	CREATE_DEFAULT_PROPERTIES_FILE(ActionGroup.PROPERTIES_FILE), //
