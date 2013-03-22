@@ -12,8 +12,8 @@ public class NeuronNetModel implements ActionTaker {
 		}
 
 		switch (type.getGroup()) {
-		case PROPERTY_FILE:
-			new PropertyFileManager().takeAction(type, arguments);
+		case PROPERTIES_FILE:
+			new PropertiesFileManager().takeAction(type, arguments);
 			break;
 		default:
 			throw new IllegalArgumentException();

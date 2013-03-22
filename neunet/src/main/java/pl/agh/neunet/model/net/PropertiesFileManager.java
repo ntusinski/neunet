@@ -10,16 +10,23 @@ import org.apache.log4j.Logger;
 import pl.agh.neunet.action.ActionGroup;
 import pl.agh.neunet.action.ActionType;
 
-public class PropertyFileManager implements ActionTaker {
+public class PropertiesFileManager implements ActionTaker {
 	private static final String FILENAME_ARGUMENT_NAME = "filename";
 
 	private static final Logger logger = Logger
-			.getLogger(PropertyFileManager.class);
+			.getLogger(PropertiesFileManager.class);
 
-	private void createDefaultPropertyFile(String filename) {
+	private void createDefaultPropertiesFile(String filename) {
+		if (filename == null) {
+			throw new IllegalArgumentException();
+		}
+
 		Properties properties = new Properties();
 
 		properties.setProperty("neurons.layers", "3");
+		properties.setProperty("neurons.numbers", "2 4 2");
+		properties.setProperty("neurons.weights", "1 1 1 1 1 1 1 1 1 "
+				+ "1 1 1 1 1 1 ");
 
 		try {
 			properties.storeToXML(new FileOutputStream(filename), null);
@@ -29,19 +36,24 @@ public class PropertyFileManager implements ActionTaker {
 		}
 	}
 
+	private void loadFromPropertiesFile(String string) {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void takeAction(ActionType type, Map<String, Object> arguments) {
-		if (type.getGroup() != ActionGroup.PROPERTY_FILE) {
+		if (type.getGroup() != ActionGroup.PROPERTIES_FILE) {
 			throw new IllegalArgumentException();
 		}
 
 		switch (type) {
-		case CREATE_DEFAULT_PROPERTY_FILE:
-			if (arguments.get(FILENAME_ARGUMENT_NAME) == null) {
-				throw new IllegalArgumentException();
-			}
-			createDefaultPropertyFile((String) arguments
+		case CREATE_DEFAULT_PROPERTIES_FILE:
+			createDefaultPropertiesFile((String) arguments
 					.get(FILENAME_ARGUMENT_NAME));
 			break;
+		case LOAD_PROPERTIES_FILE:
+			loadFromPropertiesFile((String) arguments
+					.get(FILENAME_ARGUMENT_NAME));
 		default:
 			throw new IllegalArgumentException();
 		}

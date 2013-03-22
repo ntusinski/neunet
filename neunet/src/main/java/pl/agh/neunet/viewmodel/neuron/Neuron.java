@@ -1,4 +1,4 @@
-package pl.agh.neunet.model.neuron;
+package pl.agh.neunet.viewmodel.neuron;
 
 import java.awt.Dimension;
 

@@ -25,7 +25,7 @@ public class MainToolbar extends JMenuBar {
 
 		defaultFileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new FileNameDialog(ActionType.CREATE_DEFAULT_PROPERTY_FILE)
+				new FileNameDialog(ActionType.CREATE_DEFAULT_PROPERTIES_FILE)
 						.setVisible(true);
 			}
 		});
