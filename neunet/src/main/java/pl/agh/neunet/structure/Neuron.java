@@ -37,6 +37,10 @@ public class Neuron {
 		return outputSignal;
 	}
 
+	public void setOutputSignal(double outputSignal) {
+		this.outputSignal = outputSignal;
+	}
+
 	public void addBackConnection(NetworkConnection connection) {
 		backConnections.add(connection);
 	}

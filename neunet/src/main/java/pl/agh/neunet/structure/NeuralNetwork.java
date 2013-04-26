@@ -55,6 +55,12 @@ public class NeuralNetwork {
 
 		NetworkConnection connection;
 
+		for (Neuron inputLayerNeuron : layers.get(0).getNeurons()) {
+			connection = new NetworkConnection(null, inputLayerNeuron);
+
+			inputLayerNeuron.addBackConnection(connection);
+		}
+
 		for (int i = 0; i < layers.size() - 1; i++) {
 			currentLayer = layers.get(i);
 			nextLayer = layers.get(i + 1);
@@ -83,6 +89,12 @@ public class NeuralNetwork {
 
 		bias = reader.readNextLine().get(0);
 
+		weightsIterator = reader.readNextLine().iterator();
+		for (Neuron inputLayerNeuron : layers.get(0).getNeurons()) {
+			inputLayerNeuron.getBackConnections().get(0)
+					.setWeight(weightsIterator.next());
+		}
+
 		for (int i = 0; i < layers.size() - 1; i++) {
 			weightsIterator = reader.readNextLine().iterator();
 			for (Neuron neuron : layers.get(i).getNeurons()) {
@@ -105,6 +117,14 @@ public class NeuralNetwork {
 		nextLine.add(current);
 		writer.writeNextLine(nextLine);
 
+		nextLine = new ArrayList<Double>();
+		for (Neuron inputLayerNeuron : layers.get(0).getNeurons()) {
+			current = randomDouble.nextDouble();
+			inputLayerNeuron.getBackConnections().get(0).setWeight(current);
+			nextLine.add(current);
+		}
+		writer.writeNextLine(nextLine);
+
 		for (int i = 0; i < layers.size() - 1; i++) {
 			nextLine = new ArrayList<Double>();
 			for (Neuron neuron : layers.get(i).getNeurons()) {
@@ -115,11 +135,31 @@ public class NeuralNetwork {
 					nextLine.add(current);
 				}
 			}
+			writer.writeNextLine(nextLine);
 		}
 	}
 
 	public List<Double> testNetwork(List<Double> inputVector) {
-		return null;
+		NetworkLayer inputLayer = layers.get(0);
+		Neuron inputLayerNeuron;
+		List<Double> outputVector = new ArrayList<Double>();
+
+		for (int i = 0; i < getInputLayerSize(); i++) {
+			inputLayerNeuron = inputLayer.getNeurons().get(i);
+			inputLayerNeuron.setOutputSignal(inputVector.get(i));
+		}
+
+		for (int i = 1; i < layers.size(); i++) {
+			for (Neuron neuron : layers.get(i).getNeurons()) {
+				neuron.updateOutputSignal();
+			}
+		}
+
+		for (Neuron outputNeuron : layers.get(layers.size() - 1).getNeurons()) {
+			outputVector.add(outputNeuron.getOutputSignal());
+		}
+
+		return outputVector;
 	}
 
 	public int getInputLayerSize() {
