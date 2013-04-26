@@ -11,7 +11,17 @@ public class StepActivationFunction implements ActivationFunction {
 					* connection.getWeight();
 		}
 		value = value > 0 ? 1 : 0;
-		value += neuron.getBias();
+		return value;
+	}
+
+	public double getOutputSignal(Neuron neuron, double bias) {
+		double value = 0.0;
+		for (NetworkConnection connection : neuron.getBackConnections()) {
+			value += connection.getInputNeuron().getOutputSignal()
+					* connection.getWeight();
+		}
+		value += bias;
+		value = value > 0 ? 1 : 0;
 		return value;
 	}
 }

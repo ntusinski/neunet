@@ -20,6 +20,7 @@ public class NeuralNetwork {
 	private List<NetworkLayer> layers = new ArrayList<NetworkLayer>();
 
 	public void configure(Properties prop) {
+		this.prop = prop;
 		activationFunction = ActivationFunctionType.valueOf(
 				prop.getProperty("activationFunction")).getActivationFunction();
 		createNeurons();
@@ -43,7 +44,7 @@ public class NeuralNetwork {
 		for (int i = 0; i < layersNumber; i++) {
 			neurons = new ArrayList<Neuron>();
 			for (int j = 0; j < layersSizes.get(i); j++) {
-				neurons.add(new Neuron(activationFunction, bias));
+				neurons.add(new Neuron(activationFunction));
 			}
 			layers.add(new NetworkLayer(layersSizes.get(i), neurons));
 		}
@@ -76,6 +77,11 @@ public class NeuralNetwork {
 	}
 
 	private void createWeights() {
+		for (Neuron neuron : layers.get(0).getNeurons()) {
+			for (NetworkConnection connection : neuron.getBackConnections())
+				connection.setWeight(1.0);
+		}
+
 		if (Boolean.parseBoolean(prop.getProperty("customWeights"))) {
 			createWeightsFromFile();
 		} else {
@@ -88,12 +94,6 @@ public class NeuralNetwork {
 		Iterator<Double> weightsIterator;
 
 		bias = reader.readNextLine().get(0);
-
-		weightsIterator = reader.readNextLine().iterator();
-		for (Neuron inputLayerNeuron : layers.get(0).getNeurons()) {
-			inputLayerNeuron.getBackConnections().get(0)
-					.setWeight(weightsIterator.next());
-		}
 
 		for (int i = 0; i < layers.size() - 1; i++) {
 			weightsIterator = reader.readNextLine().iterator();
@@ -117,14 +117,6 @@ public class NeuralNetwork {
 		nextLine.add(current);
 		writer.writeNextLine(nextLine);
 
-		nextLine = new ArrayList<Double>();
-		for (Neuron inputLayerNeuron : layers.get(0).getNeurons()) {
-			current = randomDouble.nextDouble();
-			inputLayerNeuron.getBackConnections().get(0).setWeight(current);
-			nextLine.add(current);
-		}
-		writer.writeNextLine(nextLine);
-
 		for (int i = 0; i < layers.size() - 1; i++) {
 			nextLine = new ArrayList<Double>();
 			for (Neuron neuron : layers.get(i).getNeurons()) {
@@ -137,6 +129,8 @@ public class NeuralNetwork {
 			}
 			writer.writeNextLine(nextLine);
 		}
+
+		writer.close();
 	}
 
 	public List<Double> testNetwork(List<Double> inputVector) {
@@ -156,7 +150,8 @@ public class NeuralNetwork {
 		}
 
 		for (Neuron outputNeuron : layers.get(layers.size() - 1).getNeurons()) {
-			outputVector.add(outputNeuron.getOutputSignal());
+			outputVector.add(activationFunction.getOutputSignal(outputNeuron,
+					bias));
 		}
 
 		return outputVector;

@@ -8,21 +8,14 @@ import pl.agh.neunet.activation.ActivationFunction;
 public class Neuron {
 	private ActivationFunction activationFunction;
 
-	private double bias;
-
 	private List<NetworkConnection> backConnections = new ArrayList<NetworkConnection>();
 
 	private List<NetworkConnection> frontConnections = new ArrayList<NetworkConnection>();
 
 	private double outputSignal;
 
-	public Neuron(ActivationFunction activationFunction, double bias) {
+	public Neuron(ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;
-		this.bias = bias;
-	}
-
-	public double getBias() {
-		return bias;
 	}
 
 	public List<NetworkConnection> getBackConnections() {

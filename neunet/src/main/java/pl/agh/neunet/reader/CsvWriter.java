@@ -24,4 +24,8 @@ public class CsvWriter {
 		}
 		writer.println(sb.toString());
 	}
+
+	public void close() {
+		writer.close();
+	}
 }

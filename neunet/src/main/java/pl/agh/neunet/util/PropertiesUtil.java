@@ -11,8 +11,8 @@ public final class PropertiesUtil {
 	public static Properties createDefaultProperties() {
 		Properties prop = new Properties();
 
-		prop.setProperty("hiddenLayers", "1");
-		prop.setProperty("layersNeurons", "2;2;1");
+		prop.setProperty("hiddenLayers", "0");
+		prop.setProperty("layersNeurons", "2;1");
 		prop.setProperty("activationFunction",
 				ActivationFunctionType.LINEAR.toString());
 		prop.setProperty("customWeights", "false");

@@ -11,7 +11,17 @@ public class SigmoidalActivationFunction implements ActivationFunction {
 					* connection.getWeight();
 		}
 		value = 1.0 / (1.0 + Math.pow(Math.E, -value));
-		value += neuron.getBias();
+		return value;
+	}
+
+	public double getOutputSignal(Neuron neuron, double bias) {
+		double value = 0.0;
+		for (NetworkConnection connection : neuron.getBackConnections()) {
+			value += connection.getInputNeuron().getOutputSignal()
+					* connection.getWeight();
+		}
+		value += bias;
+		value = 1.0 / (1.0 + Math.pow(Math.E, -value));
 		return value;
 	}
 }
