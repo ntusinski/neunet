@@ -1,17 +1,16 @@
 package pl.agh.neunet.structure;
 
-import java.util.List;
 
 public class NetworkConnection {
 	private Neuron inputNeuron;
 
-	private List<Neuron> outputNeurons;
+	private Neuron outputNeuron;
 
 	private double weight;
 
-	public NetworkConnection(Neuron inputNeuron, List<Neuron> outputNeurons) {
+	public NetworkConnection(Neuron inputNeuron, Neuron outputNeuron) {
 		this.inputNeuron = inputNeuron;
-		this.outputNeurons = outputNeurons;
+		this.outputNeuron = outputNeuron;
 	}
 
 	public Neuron getInputNeuron() {
@@ -22,12 +21,12 @@ public class NetworkConnection {
 		this.inputNeuron = inputNeuron;
 	}
 
-	public List<Neuron> getOutputNeurons() {
-		return outputNeurons;
+	public Neuron getOutputNeuron() {
+		return outputNeuron;
 	}
 
-	public void setOutputNeurons(List<Neuron> outputNeurons) {
-		this.outputNeurons = outputNeurons;
+	public void setOutputNeuron(Neuron outputNeuron) {
+		this.outputNeuron = outputNeuron;
 	}
 
 	public double getWeight() {

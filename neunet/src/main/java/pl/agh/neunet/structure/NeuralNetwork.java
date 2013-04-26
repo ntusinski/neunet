@@ -15,9 +15,9 @@ import pl.agh.neunet.reader.CsvWriter;
 public class NeuralNetwork {
 	private Properties prop;
 
+	private ActivationFunction activationFunction;
 	private double bias;
 	private List<NetworkLayer> layers = new ArrayList<NetworkLayer>();
-	private ActivationFunction activationFunction;
 
 	public void configure(Properties prop) {
 		activationFunction = ActivationFunctionType.valueOf(
@@ -43,7 +43,7 @@ public class NeuralNetwork {
 		for (int i = 0; i < layersNumber; i++) {
 			neurons = new ArrayList<Neuron>();
 			for (int j = 0; j < layersSizes.get(i); j++) {
-				neurons.add(new Neuron());
+				neurons.add(new Neuron(activationFunction, bias));
 			}
 			layers.add(new NetworkLayer(layersSizes.get(i), neurons));
 		}
@@ -59,10 +59,10 @@ public class NeuralNetwork {
 			currentLayer = layers.get(i);
 			nextLayer = layers.get(i + 1);
 			for (Neuron currLayerNeuron : currentLayer.getNeurons()) {
-				connection = new NetworkConnection(currLayerNeuron,
-						nextLayer.getNeurons());
-				currLayerNeuron.setFrontConnection(connection);
 				for (Neuron nextLayerNeuron : nextLayer.getNeurons()) {
+					connection = new NetworkConnection(currLayerNeuron,
+							nextLayerNeuron);
+					currLayerNeuron.addFrontConnection(connection);
 					nextLayerNeuron.addBackConnection(connection);
 				}
 			}
@@ -86,7 +86,9 @@ public class NeuralNetwork {
 		for (int i = 0; i < layers.size() - 1; i++) {
 			weightsIterator = reader.readNextLine().iterator();
 			for (Neuron neuron : layers.get(i).getNeurons()) {
-				neuron.getFrontConnection().setWeight(weightsIterator.next());
+				for (NetworkConnection connection : neuron
+						.getFrontConnections())
+					connection.setWeight(weightsIterator.next());
 			}
 		}
 	}
@@ -106,9 +108,12 @@ public class NeuralNetwork {
 		for (int i = 0; i < layers.size() - 1; i++) {
 			nextLine = new ArrayList<Double>();
 			for (Neuron neuron : layers.get(i).getNeurons()) {
-				current = randomDouble.nextDouble();
-				neuron.getFrontConnection().setWeight(current);
-				nextLine.add(current);
+				for (NetworkConnection connection : neuron
+						.getFrontConnections()) {
+					current = randomDouble.nextDouble();
+					connection.setWeight(current);
+					nextLine.add(current);
+				}
 			}
 		}
 	}

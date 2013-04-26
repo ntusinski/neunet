@@ -1,16 +1,17 @@
 package pl.agh.neunet.activation;
 
-import java.util.List;
+import pl.agh.neunet.structure.NetworkConnection;
+import pl.agh.neunet.structure.Neuron;
 
 public class StepActivationFunction implements ActivationFunction {
-	public double getOutputSignal(List<Impulse> impulses, double bias) {
+	public double getOutputSignal(Neuron neuron) {
 		double value = 0.0;
-		for (Impulse impulse : impulses) {
-			value += impulse.getInputSignal()
-					* impulse.getConnection().getWeight();
+		for (NetworkConnection connection : neuron.getBackConnections()) {
+			value += connection.getInputNeuron().getOutputSignal()
+					* connection.getWeight();
 		}
 		value = value > 0 ? 1 : 0;
-		value += bias;
+		value += neuron.getBias();
 		return value;
 	}
 }
