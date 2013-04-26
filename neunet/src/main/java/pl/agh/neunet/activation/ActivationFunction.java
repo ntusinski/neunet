@@ -1,5 +1,7 @@
 package pl.agh.neunet.activation;
 
-public interface ActivationFunction {
+import java.util.List;
 
+public interface ActivationFunction {
+	double getOutputSignal(List<Impulse> impulses, double bias);
 }

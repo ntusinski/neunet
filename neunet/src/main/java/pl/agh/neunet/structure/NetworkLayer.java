@@ -7,6 +7,11 @@ public class NetworkLayer {
 
 	private List<Neuron> neurons;
 
+	public NetworkLayer(int layerSize, List<Neuron> neurons) {
+		this.layerSize = layerSize;
+		this.neurons = neurons;
+	}
+
 	public int getLayerSize() {
 		return layerSize;
 	}

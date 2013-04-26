@@ -1,37 +1,26 @@
 package pl.agh.neunet.structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import pl.agh.neunet.activation.ActivationFunction;
-
 public class Neuron {
-	private List<NetworkConnection> backConnections;
+	private List<NetworkConnection> backConnections = new ArrayList<NetworkConnection>();
 
-	private List<NetworkConnection> frontConnections;
-
-	private ActivationFunction activationFunction;
+	private NetworkConnection frontConnection;
 
 	public List<NetworkConnection> getBackConnections() {
 		return backConnections;
 	}
 
-	public void setBackConnections(List<NetworkConnection> backConnections) {
-		this.backConnections = backConnections;
+	public NetworkConnection getFrontConnection() {
+		return frontConnection;
 	}
 
-	public List<NetworkConnection> getFrontConnections() {
-		return frontConnections;
+	public void setFrontConnection(NetworkConnection frontConnection) {
+		this.frontConnection = frontConnection;
 	}
 
-	public void setFrontConnections(List<NetworkConnection> frontConnections) {
-		this.frontConnections = frontConnections;
-	}
-
-	public ActivationFunction getActivationFunction() {
-		return activationFunction;
-	}
-
-	public void setActivationFunction(ActivationFunction activationFunction) {
-		this.activationFunction = activationFunction;
+	public void addBackConnection(NetworkConnection connection) {
+		backConnections.add(connection);
 	}
 }
