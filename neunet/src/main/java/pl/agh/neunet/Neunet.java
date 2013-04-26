@@ -1,11 +1,23 @@
 package pl.agh.neunet;
 
-import org.apache.log4j.Logger;
-
 public class Neunet {
-	private static final Logger logger = Logger.getLogger(Neunet.class);
-
 	public static void main(String[] args) {
-		logger.info("Neunet started execution");
+		if (args.length != 1) {
+			createDefaultPropertiesFile();
+			throw new IllegalArgumentException(
+					"You must specify 1 parameter -- "
+							+ "path to properties file");
+		}
+		loadPropertiesFile(args[0]);
+	}
+
+	private static void loadPropertiesFile(String string) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private static void createDefaultPropertiesFile() {
+		// TODO Auto-generated method stub
+
 	}
 }
