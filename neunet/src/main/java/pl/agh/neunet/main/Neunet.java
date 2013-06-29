@@ -3,12 +3,14 @@ package pl.agh.neunet.main;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 
 import pl.agh.neunet.structure.NeuralNetwork;
-import pl.agh.neunet.util.ConsoleUtil;
 import pl.agh.neunet.util.PropertiesUtil;
 
 public class Neunet {
+	private static final Scanner scan = new Scanner(System.in);
+
 	public Neunet() {
 		Properties prop = PropertiesUtil.createDefaultProperties();
 		run(prop);
@@ -31,8 +33,10 @@ public class Neunet {
 	private void testNetwork(NeuralNetwork network) {
 		List<Double> inputVector = new ArrayList<Double>();
 
+		System.out.println("Enter input vector in size of "
+				+ network.getInputLayerSize());
 		for (int i = 0; i < network.getInputLayerSize(); i++) {
-			inputVector.add(ConsoleUtil.nextDouble());
+			inputVector.add(scan.nextDouble());
 		}
 
 		System.out.println(network.testNetwork(inputVector));
