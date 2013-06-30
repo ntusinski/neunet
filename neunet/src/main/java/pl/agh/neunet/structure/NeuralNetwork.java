@@ -8,29 +8,39 @@ import java.util.Properties;
 
 import pl.agh.neunet.activation.ActivationFunction;
 import pl.agh.neunet.activation.ActivationFunctionType;
+import pl.agh.neunet.csv.CsvReader;
+import pl.agh.neunet.csv.CsvWriter;
 import pl.agh.neunet.random.RandomDouble;
-import pl.agh.neunet.reader.CsvReader;
-import pl.agh.neunet.reader.CsvWriter;
 
 public class NeuralNetwork {
 	private Properties prop;
-
-	private ActivationFunction activationFunction;
-	private double bias;
+	private int layersNumber;
+	private ActivationFunction[] activationFunctions;
 	private List<NetworkLayer> layers = new ArrayList<NetworkLayer>();
 
 	public void configure(Properties prop) {
 		this.prop = prop;
-		activationFunction = ActivationFunctionType.valueOf(
-				prop.getProperty("activationFunction")).getActivationFunction();
+		layersNumber = Integer.parseInt(prop.getProperty("hiddenLayers")) + 2;
+
+		parseActivationFunctions();
 		createNeurons();
 		createConnections();
 		createWeights();
 	}
 
-	private void createNeurons() {
-		int layersNumber = Integer.parseInt(prop.getProperty("hiddenLayers")) + 2;
+	private void parseActivationFunctions() {
+		String[] functionsNames = prop.getProperty("activationFunctions")
+				.split(";");
 
+		activationFunctions = new ActivationFunction[layersNumber];
+		activationFunctions[0] = null;
+		for (int i = 0; i < functionsNames.length; i++) {
+			activationFunctions[i + 1] = ActivationFunctionType.valueOf(
+					functionsNames[i]).getActivationFunction();
+		}
+	}
+
+	private void createNeurons() {
 		List<String> layersSizesString = Arrays.asList(prop.getProperty(
 				"layersNeurons").split(";"));
 		List<Integer> layersSizes = new ArrayList<Integer>();
@@ -44,7 +54,7 @@ public class NeuralNetwork {
 		for (int i = 0; i < layersNumber; i++) {
 			neurons = new ArrayList<Neuron>();
 			for (int j = 0; j < layersSizes.get(i); j++) {
-				neurons.add(new Neuron(activationFunction));
+				neurons.add(new Neuron(activationFunctions[i]));
 			}
 			layers.add(new NetworkLayer(layersSizes.get(i), neurons));
 		}
@@ -91,18 +101,27 @@ public class NeuralNetwork {
 
 	private void createWeightsFromFile() {
 		CsvReader reader = new CsvReader(prop.getProperty("weightsFilepath"));
-		Iterator<Double> weightsIterator;
+		Iterator<Double> lineIterator;
+		Double weight;
+		Double bias;
 
-		bias = reader.readNextLine().get(0);
-
-		for (int i = 0; i < layers.size() - 1; i++) {
-			weightsIterator = reader.readNextLine().iterator();
+		for (int i = 0; i < layersNumber; i++) {
 			for (Neuron neuron : layers.get(i).getNeurons()) {
-				for (NetworkConnection connection : neuron
-						.getFrontConnections())
-					connection.setWeight(weightsIterator.next());
+				lineIterator = reader.readNextLine().iterator();
+				if (i > 0) {
+					bias = lineIterator.next();
+					neuron.getBias().setValue(bias);
+				}
+				if (i < layersNumber - 1) {
+					for (NetworkConnection connection : neuron
+							.getFrontConnections()) {
+						weight = lineIterator.next();
+						connection.setWeight(weight);
+					}
+				}
 			}
 		}
+
 	}
 
 	private void createRandomWeights() {
@@ -111,23 +130,24 @@ public class NeuralNetwork {
 		double current;
 		List<Double> nextLine;
 
-		current = randomDouble.nextDouble();
-		bias = current;
-		nextLine = new ArrayList<Double>();
-		nextLine.add(current);
-		writer.writeNextLine(nextLine);
-
-		for (int i = 0; i < layers.size() - 1; i++) {
-			nextLine = new ArrayList<Double>();
+		for (int i = 0; i < layersNumber; i++) {
 			for (Neuron neuron : layers.get(i).getNeurons()) {
-				for (NetworkConnection connection : neuron
-						.getFrontConnections()) {
+				nextLine = new ArrayList<Double>();
+				if (i > 0) {
 					current = randomDouble.nextDouble();
-					connection.setWeight(current);
+					neuron.getBias().setValue(current);
 					nextLine.add(current);
 				}
+				if (i < layersNumber - 1) {
+					for (NetworkConnection connection : neuron
+							.getFrontConnections()) {
+						current = randomDouble.nextDouble();
+						connection.setWeight(current);
+						nextLine.add(current);
+					}
+				}
+				writer.writeNextLine(nextLine);
 			}
-			writer.writeNextLine(nextLine);
 		}
 
 		writer.close();
@@ -150,8 +170,7 @@ public class NeuralNetwork {
 		}
 
 		for (Neuron outputNeuron : layers.get(layers.size() - 1).getNeurons()) {
-			outputVector.add(activationFunction.getOutputSignal(outputNeuron,
-					bias));
+			outputVector.add(outputNeuron.getOutputSignal());
 		}
 
 		return outputVector;

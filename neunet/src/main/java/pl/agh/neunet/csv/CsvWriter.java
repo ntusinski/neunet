@@ -1,4 +1,4 @@
-package pl.agh.neunet.reader;
+package pl.agh.neunet.csv;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

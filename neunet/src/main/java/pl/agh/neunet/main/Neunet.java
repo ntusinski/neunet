@@ -39,7 +39,8 @@ public class Neunet {
 			inputVector.add(scan.nextDouble());
 		}
 
-		System.out.println(network.testNetwork(inputVector));
+		System.out.println("Result is: " + network.testNetwork(inputVector));
+		System.out.println();
 	}
 
 	public static void main(String[] args) {

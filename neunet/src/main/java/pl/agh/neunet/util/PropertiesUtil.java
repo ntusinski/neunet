@@ -5,16 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import pl.agh.neunet.activation.ActivationFunctionType;
-
 public final class PropertiesUtil {
 	public static Properties createDefaultProperties() {
 		Properties prop = new Properties();
 
 		prop.setProperty("hiddenLayers", "0");
 		prop.setProperty("layersNeurons", "2;1");
-		prop.setProperty("activationFunction",
-				ActivationFunctionType.LINEAR.toString());
+		prop.setProperty("activationFunctions", "LINEAR");
 		prop.setProperty("customWeights", "false");
 		prop.setProperty("weightsFilepath", "weights.csv");
 
