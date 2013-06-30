@@ -13,7 +13,10 @@ public final class PropertiesUtil {
 		prop.setProperty("layersNeurons", "2;1");
 		prop.setProperty("activationFunctions", "LINEAR");
 		prop.setProperty("customWeights", "false");
-		prop.setProperty("weightsFilepath", "weights.csv");
+		prop.setProperty("customWeightsLowerValue", "0.0");
+		prop.setProperty("customWeightsUpperValue", "1.0");
+		prop.setProperty("inputWeightsFilepath", "inputWeights.csv");
+		prop.setProperty("outputWeightsFilepath", "outputWeights.csv");
 
 		try {
 			prop.storeToXML(new FileOutputStream("neunet.properties"), null);
