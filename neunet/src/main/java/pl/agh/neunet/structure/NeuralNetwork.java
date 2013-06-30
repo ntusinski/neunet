@@ -100,7 +100,8 @@ public class NeuralNetwork {
 	}
 
 	private void createWeightsFromFile() {
-		CsvReader reader = new CsvReader(prop.getProperty("weightsFilepath"));
+		CsvReader reader = new CsvReader(
+				prop.getProperty("inputWeightsFilepath"));
 		Iterator<Double> lineIterator;
 		Double weight;
 		Double bias;
@@ -125,8 +126,15 @@ public class NeuralNetwork {
 	}
 
 	private void createRandomWeights() {
-		CsvWriter writer = new CsvWriter(prop.getProperty("weightsFilepath"));
-		RandomDouble randomDouble = new RandomDouble(0.0, 1.0);
+		CsvWriter writer = new CsvWriter(
+				prop.getProperty("inputWeightsFilepath"));
+
+		double lowerValue = Double.parseDouble(prop
+				.getProperty("customWeightsLowerValue"));
+		double upperValue = Double.parseDouble(prop
+				.getProperty("customWeightsUpperValue"));
+
+		RandomDouble randomDouble = new RandomDouble(lowerValue, upperValue);
 		double current;
 		List<Double> nextLine;
 
@@ -144,6 +152,30 @@ public class NeuralNetwork {
 						current = randomDouble.nextDouble();
 						connection.setWeight(current);
 						nextLine.add(current);
+					}
+				}
+				writer.writeNextLine(nextLine);
+			}
+		}
+
+		writer.close();
+	}
+
+	public void saveCurrentWeightsToFile() {
+		CsvWriter writer = new CsvWriter(
+				prop.getProperty("outputWeightsFilepath"));
+		List<Double> nextLine;
+
+		for (int i = 0; i < layersNumber; i++) {
+			for (Neuron neuron : layers.get(i).getNeurons()) {
+				nextLine = new ArrayList<Double>();
+				if (i > 0) {
+					nextLine.add(neuron.getBias().getValue());
+				}
+				if (i < layersNumber - 1) {
+					for (NetworkConnection connection : neuron
+							.getFrontConnections()) {
+						nextLine.add(connection.getWeight());
 					}
 				}
 				writer.writeNextLine(nextLine);

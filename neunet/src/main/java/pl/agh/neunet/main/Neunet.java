@@ -25,6 +25,7 @@ public class Neunet {
 		NeuralNetwork network = new NeuralNetwork();
 
 		network.configure(prop);
+		network.saveCurrentWeightsToFile();
 		while (true) {
 			testNetwork(network);
 		}
