@@ -126,44 +126,32 @@ public class NeuralNetwork {
 	}
 
 	private void createRandomWeights() {
-		CsvWriter writer = new CsvWriter(
-				prop.getProperty("inputWeightsFilepath"));
-
 		double lowerValue = Double.parseDouble(prop
 				.getProperty("customWeightsLowerValue"));
 		double upperValue = Double.parseDouble(prop
 				.getProperty("customWeightsUpperValue"));
-
 		RandomDouble randomDouble = new RandomDouble(lowerValue, upperValue);
-		double current;
-		List<Double> nextLine;
 
 		for (int i = 0; i < layersNumber; i++) {
 			for (Neuron neuron : layers.get(i).getNeurons()) {
-				nextLine = new ArrayList<Double>();
 				if (i > 0) {
-					current = randomDouble.nextDouble();
-					neuron.getBias().setValue(current);
-					nextLine.add(current);
+					neuron.getBias().setValue(randomDouble.nextDouble());
 				}
 				if (i < layersNumber - 1) {
 					for (NetworkConnection connection : neuron
 							.getFrontConnections()) {
-						current = randomDouble.nextDouble();
-						connection.setWeight(current);
-						nextLine.add(current);
+						connection.setWeight(randomDouble.nextDouble());
 					}
 				}
-				writer.writeNextLine(nextLine);
 			}
 		}
-
-		writer.close();
+		saveCurrentWeightsToFile(false);
 	}
 
-	public void saveCurrentWeightsToFile() {
-		CsvWriter writer = new CsvWriter(
-				prop.getProperty("outputWeightsFilepath"));
+	public void saveCurrentWeightsToFile(boolean output) {
+		CsvWriter writer = output ? new CsvWriter(
+				prop.getProperty("outputWeightsFilepath")) : new CsvWriter(
+				prop.getProperty("inputWeightsFilepath"));
 		List<Double> nextLine;
 
 		for (int i = 0; i < layersNumber; i++) {
