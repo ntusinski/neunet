@@ -1,7 +1,9 @@
 package pl.agh.neunet.kohonen;
 
 public enum NeighborhoodFunctionType {
-	CONTEST(new ContestNeighborhoodFunction()); //
+	CONTEST(new ContestNeighborhoodFunction()), //
+	NEIGHBORHOOD_1D(new Neighborhood1DFunction()), //
+	NEIGHBORHOOD_2D(new Neighborhood2DFunction()); //
 
 	private NeighborhoodFunction function;
 

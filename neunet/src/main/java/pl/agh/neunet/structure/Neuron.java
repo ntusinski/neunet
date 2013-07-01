@@ -16,6 +16,10 @@ public class Neuron {
 
 	private double outputSignal;
 
+	private List<Neuron> neighbors1D = new ArrayList<Neuron>();
+
+	private List<Neuron> neighbors2D = new ArrayList<Neuron>();
+
 	public Neuron(ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;
 	}
@@ -71,5 +75,21 @@ public class Neuron {
 					- neuron.getBackConnections().get(i).getWeight(), 2);
 		}
 		return currentDistance;
+	}
+
+	public List<Neuron> getNeighbors1D() {
+		return neighbors1D;
+	}
+
+	public void addNeighbor1D(Neuron neighbor) {
+		neighbors1D.add(neighbor);
+	}
+
+	public List<Neuron> getNeighbors2D() {
+		return neighbors2D;
+	}
+
+	public void addNeighbor2D(Neuron neighbor) {
+		neighbors2D.add(neighbor);
 	}
 }

@@ -46,15 +46,63 @@ public class NeuralNetwork {
 		List<Integer> layersSizes = new ArrayList<Integer>();
 
 		List<Neuron> neurons;
+		Neuron lastNeuron;
+		Neuron currNeuron = null;
 
 		for (int i = 0; i < layersNumber; i++) {
 			layersSizes.add(Integer.parseInt(layersSizesString.get(i)));
 		}
 
+		List<List<Neuron>> neuronArray = new ArrayList<List<Neuron>>();
+		int xSize = (int) Math.sqrt(layersSizes.get(1));
+		int ySize = 0;
+		int currIndex = 0;
+
 		for (int i = 0; i < layersNumber; i++) {
 			neurons = new ArrayList<Neuron>();
 			for (int j = 0; j < layersSizes.get(i); j++) {
-				neurons.add(new Neuron(activationFunctions[i]));
+				lastNeuron = currNeuron;
+				currNeuron = new Neuron(activationFunctions[i]);
+				neurons.add(currNeuron);
+
+				if (i == 1) {
+					if (j > 0) {
+						currNeuron.addNeighbor1D(lastNeuron);
+						lastNeuron.addNeighbor1D(currNeuron);
+					}
+
+					try {
+						neuronArray.get(ySize);
+					} catch (IndexOutOfBoundsException e) {
+						neuronArray.add(new ArrayList<Neuron>());
+					}
+					neuronArray.get(ySize).add(currNeuron);
+					currIndex = (currIndex + 1) % xSize;
+					if (currIndex == 0) {
+						ySize++;
+					}
+					for (int k = 0; k < neuronArray.size(); k++) {
+						for (int l = 0; l < neuronArray.get(k).size(); l++) {
+							Neuron n = neuronArray.get(k).get(l);
+							if (k > 0) {
+								n.addNeighbor2D(neuronArray.get(k - 1).get(l));
+							}
+							if (l > 0) {
+								n.addNeighbor2D(neuronArray.get(k).get(l - 1));
+							}
+							try {
+								neuronArray.get(k + 1).get(l);
+								n.addNeighbor2D(neuronArray.get(k + 1).get(l));
+							} catch (IndexOutOfBoundsException e) {
+							}
+							try {
+								neuronArray.get(k).get(l + 1);
+								n.addNeighbor2D(neuronArray.get(k + 1).get(l + 1));
+							} catch (IndexOutOfBoundsException e) {
+							}
+						}
+					}
+				}
 			}
 			layers.add(new NetworkLayer(layersSizes.get(i), neurons));
 		}

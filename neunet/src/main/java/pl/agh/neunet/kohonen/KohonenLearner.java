@@ -28,7 +28,7 @@ public class KohonenLearner {
 				neighboringNeurons = function.getNeighboringNeurons(kohonenNeurons);
 				winnerNeuron.updateWeightKohonen(learningRate);
 				for (Neuron neuron : neighboringNeurons) {
-					neuron.updateWeightKohonen(1.0 / neuron.calculateDistance(winnerNeuron));
+					neuron.updateWeightKohonen(Math.exp(-Math.pow(neuron.calculateDistance(winnerNeuron), 2)));
 				}
 			}
 		}
