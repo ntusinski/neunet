@@ -10,6 +10,9 @@ import pl.agh.neunet.activation.ActivationFunction;
 import pl.agh.neunet.activation.ActivationFunctionType;
 import pl.agh.neunet.csv.CsvReader;
 import pl.agh.neunet.csv.CsvWriter;
+import pl.agh.neunet.kohonen.KohonenLearner;
+import pl.agh.neunet.kohonen.NeighborhoodFunction;
+import pl.agh.neunet.kohonen.NeighborhoodFunctionType;
 import pl.agh.neunet.random.RandomDouble;
 
 public class NeuralNetwork {
@@ -29,20 +32,17 @@ public class NeuralNetwork {
 	}
 
 	private void parseActivationFunctions() {
-		String[] functionsNames = prop.getProperty("activationFunctions")
-				.split(";");
+		String[] functionsNames = prop.getProperty("activationFunctions").split(";");
 
 		activationFunctions = new ActivationFunction[layersNumber];
 		activationFunctions[0] = null;
 		for (int i = 0; i < functionsNames.length; i++) {
-			activationFunctions[i + 1] = ActivationFunctionType.valueOf(
-					functionsNames[i]).getActivationFunction();
+			activationFunctions[i + 1] = ActivationFunctionType.valueOf(functionsNames[i]).getActivationFunction();
 		}
 	}
 
 	private void createNeurons() {
-		List<String> layersSizesString = Arrays.asList(prop.getProperty(
-				"layersNeurons").split(";"));
+		List<String> layersSizesString = Arrays.asList(prop.getProperty("layersNeurons").split(";"));
 		List<Integer> layersSizes = new ArrayList<Integer>();
 
 		List<Neuron> neurons;
@@ -77,8 +77,7 @@ public class NeuralNetwork {
 			nextLayer = layers.get(i + 1);
 			for (Neuron currLayerNeuron : currentLayer.getNeurons()) {
 				for (Neuron nextLayerNeuron : nextLayer.getNeurons()) {
-					connection = new NetworkConnection(currLayerNeuron,
-							nextLayerNeuron);
+					connection = new NetworkConnection(currLayerNeuron, nextLayerNeuron);
 					currLayerNeuron.addFrontConnection(connection);
 					nextLayerNeuron.addBackConnection(connection);
 				}
@@ -100,8 +99,7 @@ public class NeuralNetwork {
 	}
 
 	private void createWeightsFromFile() {
-		CsvReader reader = new CsvReader(
-				prop.getProperty("inputWeightsFilepath"));
+		CsvReader reader = new CsvReader(prop.getProperty("inputWeightsFilepath"));
 		Iterator<Double> lineIterator;
 		Double weight;
 		Double bias;
@@ -114,8 +112,7 @@ public class NeuralNetwork {
 					neuron.getBias().setValue(bias);
 				}
 				if (i < layersNumber - 1) {
-					for (NetworkConnection connection : neuron
-							.getFrontConnections()) {
+					for (NetworkConnection connection : neuron.getFrontConnections()) {
 						weight = lineIterator.next();
 						connection.setWeight(weight);
 					}
@@ -126,10 +123,8 @@ public class NeuralNetwork {
 	}
 
 	private void createRandomWeights() {
-		double lowerValue = Double.parseDouble(prop
-				.getProperty("customWeightsLowerValue"));
-		double upperValue = Double.parseDouble(prop
-				.getProperty("customWeightsUpperValue"));
+		double lowerValue = Double.parseDouble(prop.getProperty("customWeightsLowerValue"));
+		double upperValue = Double.parseDouble(prop.getProperty("customWeightsUpperValue"));
 		RandomDouble randomDouble = new RandomDouble(lowerValue, upperValue);
 
 		for (int i = 0; i < layersNumber; i++) {
@@ -138,8 +133,7 @@ public class NeuralNetwork {
 					neuron.getBias().setValue(randomDouble.nextDouble());
 				}
 				if (i < layersNumber - 1) {
-					for (NetworkConnection connection : neuron
-							.getFrontConnections()) {
+					for (NetworkConnection connection : neuron.getFrontConnections()) {
 						connection.setWeight(randomDouble.nextDouble());
 					}
 				}
@@ -149,8 +143,7 @@ public class NeuralNetwork {
 	}
 
 	public void saveCurrentWeightsToFile(boolean output) {
-		CsvWriter writer = output ? new CsvWriter(
-				prop.getProperty("outputWeightsFilepath")) : new CsvWriter(
+		CsvWriter writer = output ? new CsvWriter(prop.getProperty("outputWeightsFilepath")) : new CsvWriter(
 				prop.getProperty("inputWeightsFilepath"));
 		List<Double> nextLine;
 
@@ -161,8 +154,7 @@ public class NeuralNetwork {
 					nextLine.add(neuron.getBias().getValue());
 				}
 				if (i < layersNumber - 1) {
-					for (NetworkConnection connection : neuron
-							.getFrontConnections()) {
+					for (NetworkConnection connection : neuron.getFrontConnections()) {
 						nextLine.add(connection.getWeight());
 					}
 				}
@@ -171,6 +163,48 @@ public class NeuralNetwork {
 		}
 
 		writer.close();
+	}
+
+	public void learn() {
+		String[] rawEpochsNumbers = prop.getProperty("kohonen.epochsNumbers").split(";");
+		String[] rawLearningRates = prop.getProperty("kohonen.learningRates").split(";");
+		List<Integer> epochsNumbers = new ArrayList<Integer>();
+		List<Double> learningRates = new ArrayList<Double>();
+		NeighborhoodFunction function = NeighborhoodFunctionType.valueOf(
+				prop.getProperty("kohonen.neighborhoodFunction")).getNeighborhoodFunction();
+
+		List<List<Double>> learningData = new ArrayList<List<Double>>();
+		List<Double> line;
+		CsvReader reader = new CsvReader(prop.getProperty("kohonen.learningFile"));
+
+		for (String rawEpochsNumber : rawEpochsNumbers) {
+			epochsNumbers.add(Integer.parseInt(rawEpochsNumber));
+		}
+		for (String rawLearningRate : rawLearningRates) {
+			learningRates.add(Double.parseDouble(rawLearningRate));
+		}
+		while ((line = reader.readNextLine()) != null) {
+			learningData.add(line);
+		}
+
+		KohonenLearner.learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), epochsNumbers, learningRates,
+				function, learningData);
+	}
+
+	public double[][] getLearningResults() {
+		List<Neuron> kohonenLayerNeurons = layers.get(1).getNeurons();
+		double[][] results = new double[kohonenLayerNeurons.size()][];
+
+		for (int i = 0; i < results.length; i++) {
+			results[i] = new double[kohonenLayerNeurons.get(i).getBackConnections().size()];
+		}
+		for (int i = 0; i < results.length; i++) {
+			for (int j = 0; j < results[i].length; j++) {
+				results[i][j] = kohonenLayerNeurons.get(i).getBackConnections().get(j).getWeight();
+			}
+		}
+
+		return results;
 	}
 
 	public List<Double> testNetwork(List<Double> inputVector) {

@@ -11,6 +11,8 @@ import pl.agh.neunet.util.PropertiesUtil;
 public class Neunet {
 	private static final Scanner scan = new Scanner(System.in);
 
+	private NeuralNetwork network;
+
 	public Neunet() {
 		Properties prop = PropertiesUtil.createDefaultProperties();
 		run(prop);
@@ -22,20 +24,38 @@ public class Neunet {
 	}
 
 	private void run(Properties prop) {
-		NeuralNetwork network = new NeuralNetwork();
+		network = new NeuralNetwork();
 
 		network.configure(prop);
 		network.saveCurrentWeightsToFile(true);
+		if ("true".equals(prop.getProperty("kohonen.enable"))) {
+			learn();
+		}
 		while (true) {
-			testNetwork(network);
+			testNetwork();
 		}
 	}
 
-	private void testNetwork(NeuralNetwork network) {
+	private void learn() {
+		double[][] results;
+
+		network.learn();
+		results = network.getLearningResults();
+
+		System.out.println("Kohonen neurons weights:");
+		for (int i = 0; i < results.length; i++) {
+			System.out.print("< ");
+			for (int j = 0; j < results[i].length; j++) {
+				System.out.print(results[i][j] + ", ");
+			}
+			System.out.println(">");
+		}
+	}
+
+	private void testNetwork() {
 		List<Double> inputVector = new ArrayList<Double>();
 
-		System.out.println("Enter input vector in size of "
-				+ network.getInputLayerSize());
+		System.out.println("Enter input vector in size of " + network.getInputLayerSize());
 		for (int i = 0; i < network.getInputLayerSize(); i++) {
 			inputVector.add(scan.nextDouble());
 		}

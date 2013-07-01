@@ -53,4 +53,23 @@ public class Neuron {
 			outputSignal = activationFunction.getOutputSignal(this);
 		}
 	}
+
+	public void updateWeightKohonen(double learningRate) {
+		double newWeight;
+
+		for (NetworkConnection connection : backConnections) {
+			newWeight = connection.getWeight() + learningRate
+					* (connection.getInputNeuron().getOutputSignal() - connection.getWeight());
+			connection.setWeight(newWeight);
+		}
+	}
+
+	public double calculateDistance(Neuron neuron) {
+		double currentDistance = 0;
+		for (int i = 0; i < getBackConnections().size(); i++) {
+			currentDistance += Math.pow(getBackConnections().get(i).getWeight()
+					- neuron.getBackConnections().get(i).getWeight(), 2);
+		}
+		return currentDistance;
+	}
 }

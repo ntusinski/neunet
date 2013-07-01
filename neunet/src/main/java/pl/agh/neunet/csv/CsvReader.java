@@ -20,7 +20,13 @@ public class CsvReader {
 
 	public List<Double> readNextLine() {
 		try {
-			String[] splitLine = br.readLine().split(";");
+			String line = br.readLine();
+
+			if (line == null) {
+				return null;
+			}
+
+			String[] splitLine = line.split(";");
 			List<Double> nextLine = new ArrayList<Double>();
 
 			for (int i = 0; i < splitLine.length; i++) {

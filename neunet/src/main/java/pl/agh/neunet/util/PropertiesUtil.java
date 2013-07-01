@@ -18,6 +18,12 @@ public final class PropertiesUtil {
 		prop.setProperty("inputWeightsFilepath", "inputWeights.csv");
 		prop.setProperty("outputWeightsFilepath", "outputWeights.csv");
 
+		prop.setProperty("kohonen.enable", "false");
+		prop.setProperty("kohonen.epochsNumbers", "8000;8000;8000;8000");
+		prop.setProperty("kohonen.learningRates", "0.06;0.03;0.015;0.0075");
+		prop.setProperty("kohonen.neighborhoodFunction", "CONTEST");
+		prop.setProperty("kohonen.learningFile", "learning.csv");
+
 		try {
 			prop.storeToXML(new FileOutputStream("neunet.properties"), null);
 		} catch (IOException e) {
