@@ -149,25 +149,16 @@ public class NeuralNetwork {
 	private void createWeightsFromFile() {
 		CsvReader reader = new CsvReader(prop.getProperty("inputWeightsFilepath"));
 		Iterator<Double> lineIterator;
-		Double weight;
-		Double bias;
 
-		for (int i = 0; i < layersNumber; i++) {
+		for (int i = 1; i < layersNumber; i++) {
 			for (Neuron neuron : layers.get(i).getNeurons()) {
 				lineIterator = reader.readNextLine().iterator();
-				if (i > 0) {
-					bias = lineIterator.next();
-					neuron.getBias().setValue(bias);
-				}
-				if (i < layersNumber - 1) {
-					for (NetworkConnection connection : neuron.getFrontConnections()) {
-						weight = lineIterator.next();
-						connection.setWeight(weight);
-					}
+				neuron.getBias().setValue(lineIterator.next());
+				for (NetworkConnection connection : neuron.getBackConnections()) {
+					connection.setWeight(lineIterator.next());
 				}
 			}
 		}
-
 	}
 
 	private void createRandomWeights() {
@@ -175,15 +166,11 @@ public class NeuralNetwork {
 		double upperValue = Double.parseDouble(prop.getProperty("customWeightsUpperValue"));
 		RandomDouble randomDouble = new RandomDouble(lowerValue, upperValue);
 
-		for (int i = 0; i < layersNumber; i++) {
+		for (int i = 1; i < layersNumber; i++) {
 			for (Neuron neuron : layers.get(i).getNeurons()) {
-				if (i > 0) {
-					neuron.getBias().setValue(randomDouble.nextDouble());
-				}
-				if (i < layersNumber - 1) {
-					for (NetworkConnection connection : neuron.getFrontConnections()) {
-						connection.setWeight(randomDouble.nextDouble());
-					}
+				neuron.getBias().setValue(randomDouble.nextDouble());
+				for (NetworkConnection connection : neuron.getBackConnections()) {
+					connection.setWeight(randomDouble.nextDouble());
 				}
 			}
 		}
@@ -195,16 +182,12 @@ public class NeuralNetwork {
 				prop.getProperty("inputWeightsFilepath"));
 		List<Double> nextLine;
 
-		for (int i = 0; i < layersNumber; i++) {
+		for (int i = 1; i < layersNumber; i++) {
 			for (Neuron neuron : layers.get(i).getNeurons()) {
 				nextLine = new ArrayList<Double>();
-				if (i > 0) {
-					nextLine.add(neuron.getBias().getValue());
-				}
-				if (i < layersNumber - 1) {
-					for (NetworkConnection connection : neuron.getFrontConnections()) {
-						nextLine.add(connection.getWeight());
-					}
+				nextLine.add(neuron.getBias().getValue());
+				for (NetworkConnection connection : neuron.getBackConnections()) {
+					nextLine.add(connection.getWeight());
 				}
 				writer.writeNextLine(nextLine);
 			}
