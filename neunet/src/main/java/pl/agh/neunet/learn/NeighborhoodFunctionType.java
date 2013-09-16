@@ -1,4 +1,4 @@
-package pl.agh.neunet.kohonen;
+package pl.agh.neunet.learn;
 
 public enum NeighborhoodFunctionType {
 	CONTEST(new ContestNeighborhoodFunction()), //
