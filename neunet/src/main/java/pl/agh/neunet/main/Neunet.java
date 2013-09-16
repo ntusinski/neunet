@@ -27,10 +27,12 @@ public class Neunet {
 		network = new NeuralNetwork();
 
 		network.configure(prop);
-		network.saveCurrentWeightsToFile(true);
+
 		if ("true".equals(prop.getProperty("kohonen.enable"))) {
 			learn();
 		}
+		network.saveCurrentWeightsToFile(true);
+
 		while (true) {
 			testNetwork();
 		}
