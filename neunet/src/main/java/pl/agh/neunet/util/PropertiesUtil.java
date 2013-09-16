@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public final class PropertiesUtil {
 	public static Properties createDefaultProperties() {
-		Properties prop = new Properties();
+		Properties prop = new LinkedProperties();
 
 		prop.setProperty("hiddenLayers", "1");
 		prop.setProperty("layersNeurons", "3;8;1");
@@ -37,7 +37,7 @@ public final class PropertiesUtil {
 	}
 
 	public static Properties loadProperties(String propertiesPath) {
-		Properties prop = new Properties();
+		Properties prop = new LinkedProperties();
 
 		try {
 			prop.loadFromXML(new FileInputStream(propertiesPath));
