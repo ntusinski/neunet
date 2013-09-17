@@ -1,4 +1,4 @@
-package pl.agh.neunet.util;
+package pl.agh.neunet.util.properties;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -6,7 +6,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import pl.agh.neunet.structure.NeuralNetwork;
-import pl.agh.neunet.util.PropertiesUtil;
+import pl.agh.neunet.util.properties.PropertiesUtil;
 
 public class Neunet {
 	private static final Scanner scan = new Scanner(System.in);

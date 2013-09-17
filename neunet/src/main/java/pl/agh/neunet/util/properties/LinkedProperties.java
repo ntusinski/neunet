@@ -1,4 +1,4 @@
-package pl.agh.neunet.util;
+package pl.agh.neunet.util.properties;
 
 import java.util.Collections;
 import java.util.Enumeration;

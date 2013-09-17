@@ -8,13 +8,13 @@ import java.util.Properties;
 
 import pl.agh.neunet.activation.ActivationFunction;
 import pl.agh.neunet.activation.ActivationFunctionType;
-import pl.agh.neunet.csv.CsvReader;
-import pl.agh.neunet.csv.CsvWriter;
 import pl.agh.neunet.neighborhood.NeighborhoodFunction;
 import pl.agh.neunet.neighborhood.NeighborhoodFunctionType;
-import pl.agh.neunet.random.RandomDouble;
 import pl.agh.neunet.trainer.GrossbergTrainer;
 import pl.agh.neunet.trainer.KohonenTrainer;
+import pl.agh.neunet.util.csv.CsvReader;
+import pl.agh.neunet.util.csv.CsvWriter;
+import pl.agh.neunet.util.random.RandomDouble;
 
 public class NeuralNetwork {
 	private Properties prop;

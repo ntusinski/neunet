@@ -1,4 +1,4 @@
-package pl.agh.neunet.csv;
+package pl.agh.neunet.util.csv;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

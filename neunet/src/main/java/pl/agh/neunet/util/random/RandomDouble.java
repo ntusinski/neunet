@@ -1,4 +1,4 @@
-package pl.agh.neunet.random;
+package pl.agh.neunet.util.random;
 
 import java.util.Random;
 
