@@ -21,7 +21,6 @@ public class NeuralNetwork {
 	private int layersNumber;
 	private ActivationFunction[] activationFunctions;
 	private List<NetworkLayer> layers = new ArrayList<NetworkLayer>();
-	private Neuron winnerNeuron = null;
 
 	public void configure(Properties prop) {
 		this.prop = prop;
@@ -244,7 +243,7 @@ public class NeuralNetwork {
 
 		if (grossberg) {
 			new GrossbergTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), grossEpochsNumbers,
-					grossLearningRates, function, learningOutputData);
+					grossLearningRates, function, learningInputData, learningOutputData);
 		}
 	}
 
@@ -280,12 +279,8 @@ public class NeuralNetwork {
 			}
 		}
 
-		if ("false".equals(prop.get("grossberg.enable"))) {
-			for (Neuron outputNeuron : layers.get(layers.size() - 1).getNeurons()) {
-				outputVector.add(outputNeuron.getOutputSignal());
-			}
-		} else {
-			outputVector.add(winnerNeuron.getOutputSignal());
+		for (Neuron outputNeuron : layers.get(layers.size() - 1).getNeurons()) {
+			outputVector.add(outputNeuron.getOutputSignal());
 		}
 
 		return outputVector;

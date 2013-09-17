@@ -8,17 +8,18 @@ import pl.agh.neunet.structure.Neuron;
 
 public class GrossbergTrainer {
 	public void learn(List<Neuron> inputNeurons, List<Neuron> kohonenNeurons, List<Integer> epochsLengths,
-			List<Double> learningRates, NeighborhoodFunction function, List<List<Double>> learningData) {
+			List<Double> learningRates, NeighborhoodFunction function, List<List<Double>> learningInputData,
+			List<List<Double>> learningOutputData) {
 		int caseNumber = 0;
 		int epochsNumber = epochsLengths.size();
 		for (int epoch = 0; epoch < epochsNumber; epoch++) {
 			int epochLength = epochsLengths.get(epoch);
 			double learningRate = learningRates.get(epoch);
 			for (int epochItNumber = 0; epochItNumber < epochLength; epochItNumber++) {
-				setInputNeuronWeightsAsInTrainingData(learningData.get(caseNumber), inputNeurons);
-				setGrossbergWeights(learningData.get(caseNumber), kohonenNeurons, function, learningRate);
+				setInputNeuronWeightsAsInTrainingData(learningInputData.get(caseNumber), inputNeurons);
+				setGrossbergWeights(learningOutputData.get(caseNumber), kohonenNeurons, function, learningRate);
 				caseNumber++;
-				caseNumber %= learningData.size();
+				caseNumber %= learningInputData.size();
 			}
 		}
 	}
