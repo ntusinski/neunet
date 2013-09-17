@@ -1,4 +1,4 @@
-package pl.agh.neunet.learn;
+package pl.agh.neunet.neighborhood;
 
 import java.util.List;
 

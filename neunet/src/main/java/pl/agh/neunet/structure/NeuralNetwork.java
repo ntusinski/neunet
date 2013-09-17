@@ -10,10 +10,11 @@ import pl.agh.neunet.activation.ActivationFunction;
 import pl.agh.neunet.activation.ActivationFunctionType;
 import pl.agh.neunet.csv.CsvReader;
 import pl.agh.neunet.csv.CsvWriter;
-import pl.agh.neunet.learn.Learner;
-import pl.agh.neunet.learn.NeighborhoodFunction;
-import pl.agh.neunet.learn.NeighborhoodFunctionType;
+import pl.agh.neunet.neighborhood.NeighborhoodFunction;
+import pl.agh.neunet.neighborhood.NeighborhoodFunctionType;
 import pl.agh.neunet.random.RandomDouble;
+import pl.agh.neunet.trainer.GrossbergTrainer;
+import pl.agh.neunet.trainer.KohonenTrainer;
 
 public class NeuralNetwork {
 	private Properties prop;
@@ -200,10 +201,14 @@ public class NeuralNetwork {
 	public void learn() {
 		String[] rawEpochsNumbers = prop.getProperty("kohonen.epochsNumbers").split(";");
 		String[] rawLearningRates = prop.getProperty("kohonen.learningRates").split(";");
+		String[] grossRawEpochNumbers = prop.getProperty("grossberg.epochsNumbers").split(";");
 		String[] grossRawLearningRates = prop.getProperty("grossberg.learningRates").split(";");
+
 		List<Integer> epochsNumbers = new ArrayList<Integer>();
+		List<Integer> grossEpochsNumbers = new ArrayList<Integer>();
 		List<Double> learningRates = new ArrayList<Double>();
 		List<Double> grossLearningRates = new ArrayList<Double>();
+
 		NeighborhoodFunction function = NeighborhoodFunctionType.valueOf(
 				prop.getProperty("kohonen.neighborhoodFunction")).getNeighborhoodFunction();
 
@@ -217,12 +222,16 @@ public class NeuralNetwork {
 		for (String rawEpochsNumber : rawEpochsNumbers) {
 			epochsNumbers.add(Integer.parseInt(rawEpochsNumber));
 		}
+		for (String rawGrossEpochsNumber : grossRawEpochNumbers) {
+			grossEpochsNumbers.add(Integer.parseInt(rawGrossEpochsNumber));
+		}
 		for (String rawLearningRate : rawLearningRates) {
 			learningRates.add(Double.parseDouble(rawLearningRate));
 		}
 		for (String rawGrossLearningRate : grossRawLearningRates) {
 			grossLearningRates.add(Double.parseDouble(rawGrossLearningRate));
 		}
+
 		while ((line = reader.readNextLine()) != null) {
 			learningInputData.add(line);
 			if (grossberg) {
@@ -230,8 +239,13 @@ public class NeuralNetwork {
 			}
 		}
 
-		winnerNeuron = Learner.learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), epochsNumbers,
-				learningRates, function, learningInputData, learningOutputData, grossberg, grossLearningRates);
+		new KohonenTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), epochsNumbers,
+				learningRates, function, learningInputData);
+
+		if (grossberg) {
+			new GrossbergTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), grossEpochsNumbers,
+					grossLearningRates, function, learningOutputData);
+		}
 	}
 
 	public double[][] getLearningResults() {

@@ -1,11 +1,12 @@
-package pl.agh.neunet.learn;
+package pl.agh.neunet.neighborhood;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.agh.neunet.structure.NetworkConnection;
 import pl.agh.neunet.structure.Neuron;
 
-public class Neighborhood1DFunction implements NeighborhoodFunction {
+public class ContestNeighborhoodFunction implements NeighborhoodFunction {
 	public Neuron getWinnerNeuron(List<Neuron> neurons) {
 		double currentDistance;
 		double maxDistance = -1;
@@ -25,6 +26,6 @@ public class Neighborhood1DFunction implements NeighborhoodFunction {
 	}
 
 	public List<Neuron> getNeighboringNeurons(List<Neuron> neurons) {
-		return getWinnerNeuron(neurons).getNeighbors1D();
+		return new ArrayList<Neuron>();
 	}
 }
