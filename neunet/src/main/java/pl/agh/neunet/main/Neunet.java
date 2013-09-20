@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import pl.agh.neunet.structure.NeuralNetwork;
+import pl.agh.neunet.util.properties.NetworkProperties;
 import pl.agh.neunet.util.properties.PropertiesUtil;
 
 public class Neunet {
@@ -15,11 +16,13 @@ public class Neunet {
 
 	public Neunet() {
 		Properties prop = PropertiesUtil.createDefaultProperties();
+		NetworkProperties.setNetworkProperties(prop);
 		run(prop);
 	}
 
 	public Neunet(String propertiesPath) {
 		Properties prop = PropertiesUtil.loadProperties(propertiesPath);
+		NetworkProperties.setNetworkProperties(prop);
 		run(prop);
 	}
 

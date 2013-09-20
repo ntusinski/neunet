@@ -1,6 +1,7 @@
 package pl.agh.neunet.trainer;
 
 import java.util.List;
+import java.util.Random;
 
 import pl.agh.neunet.neighborhood.NeighborhoodFunction;
 import pl.agh.neunet.structure.Neuron;
@@ -10,12 +11,14 @@ public class KohonenTrainer {
 			List<Double> learningRates, NeighborhoodFunction function, List<List<Double>> learningData) {
 		int caseNumber = 0;
 		int epochsNumber = epochsLengths.size();
+		function.initialize(kohonenNeurons);
 		for (int epoch = 0; epoch < epochsNumber; epoch++) {
 			int epochLength = epochsLengths.get(epoch);
 			double learningRate = learningRates.get(epoch);
 			for (int epochItNumber = 0; epochItNumber < epochLength; epochItNumber++) {
 				setInputNeuronWeightsAsInTrainingData(learningData.get(caseNumber), inputNeurons);
-				setKohonenWeights(learningData.get(caseNumber), kohonenNeurons, function, learningRate);
+				setKohonenWeights(learningData.get(Math.abs(new Random().nextInt()) % learningData.size()),
+						kohonenNeurons, function, learningRate);
 				caseNumber++;
 				caseNumber %= learningData.size();
 			}

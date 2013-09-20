@@ -6,6 +6,9 @@ import pl.agh.neunet.structure.NetworkConnection;
 import pl.agh.neunet.structure.Neuron;
 
 public class Neighborhood2DFunction implements NeighborhoodFunction {
+	public void initialize(List<Neuron> neurons) {
+	}
+
 	public Neuron getWinnerNeuron(List<Neuron> neurons) {
 		double currentDistance;
 		double maxDistance = -1;

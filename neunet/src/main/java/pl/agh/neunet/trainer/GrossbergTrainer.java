@@ -12,6 +12,7 @@ public class GrossbergTrainer {
 			List<List<Double>> learningOutputData) {
 		int caseNumber = 0;
 		int epochsNumber = epochsLengths.size();
+		function.initialize(kohonenNeurons);
 		for (int epoch = 0; epoch < epochsNumber; epoch++) {
 			int epochLength = epochsLengths.get(epoch);
 			double learningRate = learningRates.get(epoch);
