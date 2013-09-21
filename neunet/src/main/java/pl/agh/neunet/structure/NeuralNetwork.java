@@ -14,6 +14,7 @@ import pl.agh.neunet.trainer.GrossbergTrainer;
 import pl.agh.neunet.trainer.KohonenTrainer;
 import pl.agh.neunet.util.csv.CsvReader;
 import pl.agh.neunet.util.csv.CsvWriter;
+import pl.agh.neunet.util.properties.NetworkProperties;
 import pl.agh.neunet.util.random.RandomDouble;
 
 public class NeuralNetwork {
@@ -273,14 +274,27 @@ public class NeuralNetwork {
 			inputLayerNeuron.setOutputSignal(inputVector.get(i));
 		}
 
-		for (int i = 1; i < layers.size(); i++) {
-			for (Neuron neuron : layers.get(i).getNeurons()) {
+		Neuron winnerNeuron = NetworkProperties.getTestNeighborhoodFunction().getWinnerNeuron(
+				layers.get(1).getNeurons());
+
+		System.out.print("back connections: ");
+		for (NetworkConnection conn : winnerNeuron.getBackConnections()) {
+			System.out.print(conn.getWeight() + " ");
+		}
+		System.out.println();
+
+		for (Neuron neuron : layers.get(1).getNeurons()) {
+			if (winnerNeuron == neuron) {
 				neuron.updateOutputSignal();
+			} else {
+				neuron.setOutputSignal(0.0);
 			}
 		}
 
-		for (Neuron outputNeuron : layers.get(layers.size() - 1).getNeurons()) {
-			outputVector.add(outputNeuron.getOutputSignal());
+		for (Neuron neuron : layers.get(2).getNeurons()) {
+			neuron.getBias().setValue(0.0);
+			neuron.updateOutputSignal();
+			outputVector.add(neuron.getOutputSignal());
 		}
 
 		return outputVector;

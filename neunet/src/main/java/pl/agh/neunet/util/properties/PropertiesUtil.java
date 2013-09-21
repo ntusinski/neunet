@@ -31,6 +31,8 @@ public final class PropertiesUtil {
 		prop.setProperty("conscience.initConscience", "0.5");
 		prop.setProperty("conscience.pmin", "0.05");
 
+		prop.setProperty("test.neighborhoodFunction", "CONTEST");
+
 		try {
 			prop.storeToXML(new FileOutputStream("neunet.properties"), null);
 		} catch (IOException e) {

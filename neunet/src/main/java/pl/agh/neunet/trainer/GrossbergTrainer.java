@@ -1,6 +1,7 @@
 package pl.agh.neunet.trainer;
 
 import java.util.List;
+import java.util.Random;
 
 import pl.agh.neunet.neighborhood.NeighborhoodFunction;
 import pl.agh.neunet.structure.NetworkConnection;
@@ -17,6 +18,7 @@ public class GrossbergTrainer {
 			int epochLength = epochsLengths.get(epoch);
 			double learningRate = learningRates.get(epoch);
 			for (int epochItNumber = 0; epochItNumber < epochLength; epochItNumber++) {
+				caseNumber = Math.abs(new Random().nextInt()) % learningInputData.size();
 				setInputNeuronWeightsAsInTrainingData(learningInputData.get(caseNumber), inputNeurons);
 				setGrossbergWeights(learningOutputData.get(caseNumber), kohonenNeurons, function, learningRate);
 				caseNumber++;
@@ -30,8 +32,14 @@ public class GrossbergTrainer {
 		Neuron winnerNeuron = function.getWinnerNeuron(kohonenNeurons);
 		for (int i = 0; i < winnerNeuron.getFrontConnections().size(); i++) {
 			NetworkConnection conn = winnerNeuron.getFrontConnections().get(i);
+			conn.getInputNeuron().updateOutputSignal();
+			// System.out.println("previous " + conn.getWeight());
 			conn.setWeight(conn.getWeight() + learningRate
-					* (currentCaseData.get(i) - conn.getOutputNeuron().getOutputSignal()));
+					* (currentCaseData.get(i) - conn.getInputNeuron().getOutputSignal()));
+			// System.out.println("current " + conn.getWeight());
+			// System.out.println(currentCaseData.get(i));
+			// System.out.println(conn.getInputNeuron().getBias().getValue());
+			// System.out.println(conn.getInputNeuron().getOutputSignal());
 		}
 	}
 
