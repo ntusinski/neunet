@@ -10,8 +10,8 @@ public final class PropertiesUtil {
 		Properties prop = new LinkedProperties();
 
 		prop.setProperty("hiddenLayers", "1");
-		prop.setProperty("layersNeurons", "3;8;2");
-		prop.setProperty("activationFunctions", "LINEAR;LINEAR");
+		prop.setProperty("layersNeurons", "3;9;1");
+		prop.setProperty("activationFunctions", "SIGMOIDAL;SIGMOIDAL");
 		prop.setProperty("customWeights", "false");
 		prop.setProperty("customWeightsLowerValue", "0.0");
 		prop.setProperty("customWeightsUpperValue", "1.0");
@@ -25,11 +25,11 @@ public final class PropertiesUtil {
 		prop.setProperty("kohonen.learningFile", "learning.csv");
 
 		prop.setProperty("grossberg.enable", "true");
-		prop.setProperty("grossberg.epochsNumbers", "2000;12000;32000;72000;152000");
-		prop.setProperty("grossberg.learningRates", "0.0;0.15;0.075;0.0185;0.00117");
+		prop.setProperty("grossberg.epochsNumbers", "2000;4000;8000;16000;32000");
+		prop.setProperty("grossberg.learningRates", "0.3;0.15;0.075;0.0185;0.00117");
 
-		prop.setProperty("conscience.initConscience", "0.5");
-		prop.setProperty("conscience.pmin", "0.05");
+		prop.setProperty("conscience.initConscience", "0.8");
+		prop.setProperty("conscience.pmin", "0.06");
 
 		prop.setProperty("test.neighborhoodFunction", "CONTEST");
 
