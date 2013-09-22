@@ -44,7 +44,6 @@ public class NeuralNetworkTester {
 
         List<Double> outputData = new ArrayList<Double>();
         for (Neuron neuron : layers.get(layers.size() - 1).getNeurons()) {
-            neuron.updateOutputSignal();
             outputData.add(neuron.getOutputSignal());
         }
         return outputData;
