@@ -14,6 +14,8 @@ public class Neuron {
 
 	private List<NetworkConnection> frontConnections = new ArrayList<NetworkConnection>();
 
+	private double inputSignal;
+	
 	private double outputSignal;
 
 	private List<Neuron> neighbors1D = new ArrayList<Neuron>();
@@ -35,6 +37,14 @@ public class Neuron {
 	public List<NetworkConnection> getFrontConnections() {
 		return frontConnections;
 	}
+	
+	public double getInputSignal() {
+		return inputSignal;
+	}
+
+	public void setInputSignal(double inputSignal) {
+		this.inputSignal = inputSignal;
+	}
 
 	public double getOutputSignal() {
 		return outputSignal;
@@ -50,6 +60,12 @@ public class Neuron {
 
 	public void addFrontConnection(NetworkConnection connection) {
 		frontConnections.add(connection);
+	}
+	
+	public void updateInputSignal() {
+		if (activationFunction != null) {
+			outputSignal = activationFunction.getInputSignal(this);
+		}
 	}
 
 	public void updateOutputSignal() {

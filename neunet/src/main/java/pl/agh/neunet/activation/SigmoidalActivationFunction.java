@@ -4,6 +4,11 @@ import pl.agh.neunet.structure.NetworkConnection;
 import pl.agh.neunet.structure.Neuron;
 
 public class SigmoidalActivationFunction implements ActivationFunction {
+	public double getInputSignal(Neuron neuron) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
 	public double getOutputSignal(Neuron neuron) {
 		double value = 0.0;
 		for (NetworkConnection connection : neuron.getBackConnections()) {
