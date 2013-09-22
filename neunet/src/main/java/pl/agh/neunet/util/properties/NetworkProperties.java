@@ -13,6 +13,7 @@ public class NetworkProperties {
     private static boolean customWeights;
     private static boolean kohonen;
     private static boolean grossberg;
+    private static boolean bp;
 
     private static int layersNumber;
 
@@ -41,6 +42,7 @@ public class NetworkProperties {
         customWeights = Boolean.parseBoolean(prop.getProperty("customWeights"));
         kohonen = Boolean.parseBoolean(prop.getProperty("kohonen.enable"));
         grossberg = Boolean.parseBoolean(prop.getProperty("grossberg.enable"));
+        bp = Boolean.parseBoolean(prop.getProperty("bp.enable"));
 
         layersNumber = Integer.parseInt(prop.getProperty("hiddenLayers")) + 2;
 
@@ -105,6 +107,10 @@ public class NetworkProperties {
 
     public static boolean isGrossberg() {
         return grossberg;
+    }
+
+    public static boolean isBp() {
+        return bp;
     }
 
     public static int getLayersNumber() {

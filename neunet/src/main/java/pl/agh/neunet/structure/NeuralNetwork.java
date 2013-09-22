@@ -219,6 +219,14 @@ public class NeuralNetwork {
     }
 
     public void testNetwork() {
+        if (NetworkProperties.isGrossberg()) {
+            testNetworkGrossberg();
+        } else {
+            
+        }
+    }
+
+    public void testNetworkGrossberg() {
         List<Double> inputVector = new ArrayList<Double>();
         Scanner scan = new Scanner(System.in);
         List<Double> outputVector = new ArrayList<Double>();
