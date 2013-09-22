@@ -17,7 +17,7 @@ public class LinearActivationFunction implements ActivationFunction {
         for (NetworkConnection connection : neuron.getBackConnections()) {
             value += connection.getInputNeuron().getOutputSignal() * connection.getWeight();
         }
-        value += neuron.getBias().getValue();
+        value -= neuron.getBias().getValue();
         return value;
     }
 }

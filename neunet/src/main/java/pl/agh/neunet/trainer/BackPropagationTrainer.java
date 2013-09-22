@@ -60,7 +60,9 @@ public class BackPropagationTrainer {
         for (int i = 1; i < layers.size(); i++) {
             for (Neuron neuron : layers.get(i).getNeurons()) {
                 for (NetworkConnection c : neuron.getBackConnections()) {
+                    System.out.print("Update of weights, old value: " + c.getWeight());
                     c.setWeight(c.getWeight() + learningRate * neuron.getErrorSignal() * c.getInputNeuron().getOutputSignal());
+                    System.out.println(", new value: " + c.getWeight());
                 }
             }
         }
