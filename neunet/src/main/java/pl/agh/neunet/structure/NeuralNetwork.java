@@ -1,12 +1,11 @@
-package pl.agh.neunet.main;
+package pl.agh.neunet.structure;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import pl.agh.neunet.structure.NetworkConnection;
-import pl.agh.neunet.structure.NetworkLayer;
-import pl.agh.neunet.structure.Neuron;
+import pl.agh.neunet.tester.NeuralNetworkTester;
+import pl.agh.neunet.trainer.NeuralNetworkTrainer;
 import pl.agh.neunet.util.csv.CsvReader;
 import pl.agh.neunet.util.csv.CsvWriter;
 import pl.agh.neunet.util.properties.NetworkProperties;
@@ -167,7 +166,7 @@ public class NeuralNetwork {
     }
 
     public void learn() {
-        new NeuralNetworkTutor(layers).learn();
+        new NeuralNetworkTrainer(layers).learn();
     }
 
     public void testNetwork() {

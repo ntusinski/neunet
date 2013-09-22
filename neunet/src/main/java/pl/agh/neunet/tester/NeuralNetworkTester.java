@@ -1,4 +1,4 @@
-package pl.agh.neunet.main;
+package pl.agh.neunet.tester;
 
 import java.util.ArrayList;
 import java.util.List;

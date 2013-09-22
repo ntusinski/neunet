@@ -2,6 +2,7 @@ package pl.agh.neunet.main;
 
 import java.util.Properties;
 
+import pl.agh.neunet.structure.NeuralNetwork;
 import pl.agh.neunet.util.properties.NetworkProperties;
 import pl.agh.neunet.util.properties.PropertiesUtil;
 

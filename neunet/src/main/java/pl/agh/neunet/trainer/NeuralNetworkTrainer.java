@@ -1,19 +1,17 @@
-package pl.agh.neunet.main;
+package pl.agh.neunet.trainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.agh.neunet.structure.NetworkLayer;
 import pl.agh.neunet.structure.Neuron;
-import pl.agh.neunet.trainer.GrossbergTrainer;
-import pl.agh.neunet.trainer.KohonenTrainer;
 import pl.agh.neunet.util.csv.CsvReader;
 import pl.agh.neunet.util.properties.NetworkProperties;
 
-public class NeuralNetworkTutor {
+public class NeuralNetworkTrainer {
     private List<NetworkLayer> layers = new ArrayList<NetworkLayer>();
 
-    public NeuralNetworkTutor(List<NetworkLayer> layers) {
+    public NeuralNetworkTrainer(List<NetworkLayer> layers) {
         this.layers = layers;
     }
 
