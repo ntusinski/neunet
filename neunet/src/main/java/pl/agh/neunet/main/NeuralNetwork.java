@@ -1,12 +1,12 @@
-package pl.agh.neunet.structure;
+package pl.agh.neunet.main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
-import pl.agh.neunet.trainer.GrossbergTrainer;
-import pl.agh.neunet.trainer.KohonenTrainer;
+import pl.agh.neunet.structure.NetworkConnection;
+import pl.agh.neunet.structure.NetworkLayer;
+import pl.agh.neunet.structure.Neuron;
 import pl.agh.neunet.util.csv.CsvReader;
 import pl.agh.neunet.util.csv.CsvWriter;
 import pl.agh.neunet.util.properties.NetworkProperties;
@@ -18,7 +18,7 @@ public class NeuralNetwork {
     public void createStructure() {
         createNeurons();
         createConnections();
-        createWeights();
+        setWeights();
     }
 
     private void createNeurons() {
@@ -106,20 +106,20 @@ public class NeuralNetwork {
         }
     }
 
-    private void createWeights() {
+    private void setWeights() {
         for (Neuron neuron : layers.get(0).getNeurons()) {
             for (NetworkConnection connection : neuron.getBackConnections())
                 connection.setWeight(1.0);
         }
 
         if (NetworkProperties.isCustomWeights()) {
-            createWeightsFromFile();
+            setWeightsFromFile();
         } else {
-            createRandomWeights();
+            setRandomWeights();
         }
     }
 
-    private void createWeightsFromFile() {
+    private void setWeightsFromFile() {
         CsvReader reader = new CsvReader(NetworkProperties.getInputWeightsFilePath());
         Iterator<Double> lineIterator;
 
@@ -134,7 +134,7 @@ public class NeuralNetwork {
         }
     }
 
-    private void createRandomWeights() {
+    private void setRandomWeights() {
         RandomDouble randomDouble = new RandomDouble(NetworkProperties.getCustomWeightsLowerValue(), NetworkProperties.getCustomWeightsUpperValue());
 
         for (int i = 1; i < NetworkProperties.getLayersNumber(); i++) {
@@ -167,115 +167,10 @@ public class NeuralNetwork {
     }
 
     public void learn() {
-        List<List<Double>> learningInputData = new ArrayList<List<Double>>();
-        List<List<Double>> learningOutputData = new ArrayList<List<Double>>();
-        List<Double> line;
-
-        if (NetworkProperties.isKohonen()) {
-            CsvReader reader = new CsvReader(NetworkProperties.getKohonenLearningFilePath());
-            while ((line = reader.readNextLine()) != null) {
-                learningInputData.add(line);
-                if (NetworkProperties.isGrossberg()) {
-                    learningOutputData.add(reader.readNextLine());
-                }
-            }
-        }
-
-        if (NetworkProperties.isKohonen()) {
-            new KohonenTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), NetworkProperties.getKohonenEpochsNumbers(),
-                    NetworkProperties.getKohonenLearningRates(), NetworkProperties.getKohonenNeighborhoodFunction(), learningInputData);
-            double[][] results = getKohonenLearningResults();
-
-            System.out.println("Kohonen neurons weights:");
-            for (int i = 0; i < results.length; i++) {
-                System.out.print("< ");
-                for (int j = 0; j < results[i].length; j++) {
-                    System.out.print(results[i][j] + ", ");
-                }
-                System.out.println(">");
-            }
-        }
-
-        if (NetworkProperties.isGrossberg()) {
-            new GrossbergTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), NetworkProperties.getGrossbergEpochsNumbers(),
-                    NetworkProperties.getGrossbergLearningRates(), NetworkProperties.getKohonenNeighborhoodFunction(), learningInputData, learningOutputData);
-        }
-    }
-
-    public double[][] getKohonenLearningResults() {
-        List<Neuron> kohonenLayerNeurons = layers.get(1).getNeurons();
-        double[][] results = new double[kohonenLayerNeurons.size()][];
-
-        for (int i = 0; i < results.length; i++) {
-            results[i] = new double[kohonenLayerNeurons.get(i).getBackConnections().size()];
-        }
-        for (int i = 0; i < results.length; i++) {
-            for (int j = 0; j < results[i].length; j++) {
-                results[i][j] = kohonenLayerNeurons.get(i).getBackConnections().get(j).getWeight();
-            }
-        }
-
-        return results;
+        new NeuralNetworkTutor(layers).learn();
     }
 
     public void testNetwork() {
-        Scanner scan = new Scanner(System.in);
-        List<Double> inputData = new ArrayList<Double>();
-
-        System.out.println("Enter input vector in size of " + layers.get(0).getNeurons().size());
-        for (int i = 0; i < layers.get(0).getNeurons().size(); i++) {
-            inputData.add(scan.nextDouble());
-        }
-
-        for (int i = 0; i < layers.get(0).getNeurons().size(); i++) {
-            Neuron inputLayerNeuron = layers.get(0).getNeurons().get(i);
-            inputLayerNeuron.setOutputSignal(inputData.get(i));
-        }
-
-        List<Double> outputData = NetworkProperties.isGrossberg() ? testNetworkGrossberg(inputData) : testNetworkWithDefaultSettings();
-        System.out.println("Result is: " + outputData);
-        System.out.println();
-    }
-
-    private List<Double> testNetworkWithDefaultSettings() {
-        for (int i = 1; i < layers.size(); i++) {
-            for (Neuron neuron : layers.get(i).getNeurons()) {
-                neuron.updateOutputSignal();
-            }
-        }
-
-        List<Double> outputData = new ArrayList<Double>();
-        for (Neuron neuron : layers.get(layers.size() - 1).getNeurons()) {
-            neuron.updateOutputSignal();
-            outputData.add(neuron.getOutputSignal());
-        }
-        return outputData;
-    }
-
-    public List<Double> testNetworkGrossberg(List<Double> inputData) {
-        Neuron winnerNeuron = NetworkProperties.getTestNeighborhoodFunction().getWinnerNeuron(layers.get(1).getNeurons());
-
-        System.out.print("Back connections: ");
-        for (NetworkConnection conn : winnerNeuron.getBackConnections()) {
-            System.out.print(conn.getWeight() + " ");
-        }
-        System.out.println();
-
-        for (Neuron neuron : layers.get(1).getNeurons()) {
-            if (winnerNeuron == neuron) {
-                neuron.updateOutputSignal();
-            } else {
-                neuron.setOutputSignal(0.0);
-            }
-        }
-
-        List<Double> outputData = new ArrayList<Double>();
-        for (Neuron neuron : layers.get(2).getNeurons()) {
-            neuron.getBias().setValue(0.0);
-            neuron.updateOutputSignal();
-            outputData.add(neuron.getOutputSignal());
-        }
-
-        return outputData;
+        new NeuralNetworkTester(layers).testNetwork();
     }
 }
