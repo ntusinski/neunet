@@ -238,8 +238,18 @@ public class NeuralNetwork {
     }
 
     private List<Double> testNetworkWithDefaultSettings() {
-        // TODO Auto-generated method stub
-        return null;
+        for (int i = 1; i < layers.size(); i++) {
+            for (Neuron neuron : layers.get(i).getNeurons()) {
+                neuron.updateOutputSignal();
+            }
+        }
+
+        List<Double> outputData = new ArrayList<Double>();
+        for (Neuron neuron : layers.get(layers.size() - 1).getNeurons()) {
+            neuron.updateOutputSignal();
+            outputData.add(neuron.getOutputSignal());
+        }
+        return outputData;
     }
 
     public List<Double> testNetworkGrossberg(List<Double> inputData) {
