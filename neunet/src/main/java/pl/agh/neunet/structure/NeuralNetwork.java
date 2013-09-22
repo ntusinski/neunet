@@ -1,10 +1,9 @@
 package pl.agh.neunet.structure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
+import java.util.Scanner;
 
 import pl.agh.neunet.trainer.GrossbergTrainer;
 import pl.agh.neunet.trainer.KohonenTrainer;
@@ -14,37 +13,27 @@ import pl.agh.neunet.util.properties.NetworkProperties;
 import pl.agh.neunet.util.random.RandomDouble;
 
 public class NeuralNetwork {
-    private Properties prop;
     private List<NetworkLayer> layers = new ArrayList<NetworkLayer>();
 
-    public void configure(Properties prop) {
-        this.prop = prop;
-
+    public void createStructure() {
         createNeurons();
         createConnections();
         createWeights();
     }
 
     private void createNeurons() {
-        List<String> layersSizesString = Arrays.asList(prop.getProperty("layersNeurons").split(";"));
-        List<Integer> layersSizes = new ArrayList<Integer>();
-
         List<Neuron> neurons;
         Neuron lastNeuron;
         Neuron currNeuron = null;
 
-        for (int i = 0; i < NetworkProperties.getLayersNumber(); i++) {
-            layersSizes.add(Integer.parseInt(layersSizesString.get(i)));
-        }
-
         List<List<Neuron>> neuronArray = new ArrayList<List<Neuron>>();
-        int xSize = (int) Math.sqrt(layersSizes.get(1));
+        int xSize = (int) Math.sqrt(NetworkProperties.getLayersSizes().get(1));
         int ySize = 0;
         int currIndex = 0;
 
         for (int i = 0; i < NetworkProperties.getLayersNumber(); i++) {
             neurons = new ArrayList<Neuron>();
-            for (int j = 0; j < layersSizes.get(i); j++) {
+            for (int j = 0; j < NetworkProperties.getLayersSizes().get(i); j++) {
                 lastNeuron = currNeuron;
                 currNeuron = new Neuron(NetworkProperties.getActivationFunctions()[i]);
                 neurons.add(currNeuron);
@@ -88,7 +77,7 @@ public class NeuralNetwork {
                     }
                 }
             }
-            layers.add(new NetworkLayer(layersSizes.get(i), neurons));
+            layers.add(new NetworkLayer(NetworkProperties.getLayersSizes().get(i), neurons));
         }
     }
 
@@ -123,7 +112,7 @@ public class NeuralNetwork {
                 connection.setWeight(1.0);
         }
 
-        if (Boolean.parseBoolean(prop.getProperty("customWeights"))) {
+        if (NetworkProperties.isCustomWeights()) {
             createWeightsFromFile();
         } else {
             createRandomWeights();
@@ -131,7 +120,7 @@ public class NeuralNetwork {
     }
 
     private void createWeightsFromFile() {
-        CsvReader reader = new CsvReader(prop.getProperty("inputWeightsFilepath"));
+        CsvReader reader = new CsvReader(NetworkProperties.getInputWeightsFilePath());
         Iterator<Double> lineIterator;
 
         for (int i = 1; i < NetworkProperties.getLayersNumber(); i++) {
@@ -160,7 +149,7 @@ public class NeuralNetwork {
     }
 
     public void saveCurrentWeightsToFile(boolean output) {
-        CsvWriter writer = output ? new CsvWriter(prop.getProperty("outputWeightsFilepath")) : new CsvWriter(prop.getProperty("inputWeightsFilepath"));
+        CsvWriter writer = output ? new CsvWriter(NetworkProperties.getOutputWeightsFilePath()) : new CsvWriter(NetworkProperties.getInputWeightsFilePath());
         List<Double> nextLine;
 
         for (int i = 1; i < NetworkProperties.getLayersNumber(); i++) {
@@ -181,9 +170,9 @@ public class NeuralNetwork {
         List<List<Double>> learningInputData = new ArrayList<List<Double>>();
         List<List<Double>> learningOutputData = new ArrayList<List<Double>>();
         List<Double> line;
-        CsvReader reader = new CsvReader(NetworkProperties.getKohonenLearningFilePath());
 
         if (NetworkProperties.isKohonen()) {
+            CsvReader reader = new CsvReader(NetworkProperties.getKohonenLearningFilePath());
             while ((line = reader.readNextLine()) != null) {
                 learningInputData.add(line);
                 if (NetworkProperties.isGrossberg()) {
@@ -195,6 +184,16 @@ public class NeuralNetwork {
         if (NetworkProperties.isKohonen()) {
             new KohonenTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), NetworkProperties.getKohonenEpochsNumbers(),
                     NetworkProperties.getKohonenLearningRates(), NetworkProperties.getKohonenNeighborhoodFunction(), learningInputData);
+            double[][] results = getKohonenLearningResults();
+
+            System.out.println("Kohonen neurons weights:");
+            for (int i = 0; i < results.length; i++) {
+                System.out.print("< ");
+                for (int j = 0; j < results[i].length; j++) {
+                    System.out.print(results[i][j] + ", ");
+                }
+                System.out.println(">");
+            }
         }
 
         if (NetworkProperties.isGrossberg()) {
@@ -203,7 +202,7 @@ public class NeuralNetwork {
         }
     }
 
-    public double[][] getLearningResults() {
+    public double[][] getKohonenLearningResults() {
         List<Neuron> kohonenLayerNeurons = layers.get(1).getNeurons();
         double[][] results = new double[kohonenLayerNeurons.size()][];
 
@@ -219,10 +218,18 @@ public class NeuralNetwork {
         return results;
     }
 
-    public List<Double> testNetwork(List<Double> inputVector) {
+    public void testNetwork() {
+        List<Double> inputVector = new ArrayList<Double>();
+        Scanner scan = new Scanner(System.in);
+        List<Double> outputVector = new ArrayList<Double>();
+
         NetworkLayer inputLayer = layers.get(0);
         Neuron inputLayerNeuron;
-        List<Double> outputVector = new ArrayList<Double>();
+
+        System.out.println("Enter input vector in size of " + getInputLayerSize());
+        for (int i = 0; i < getInputLayerSize(); i++) {
+            inputVector.add(scan.nextDouble());
+        }
 
         for (int i = 0; i < getInputLayerSize(); i++) {
             inputLayerNeuron = inputLayer.getNeurons().get(i);
@@ -251,7 +258,8 @@ public class NeuralNetwork {
             outputVector.add(neuron.getOutputSignal());
         }
 
-        return outputVector;
+        System.out.println("Result is: " + outputVector);
+        System.out.println();
     }
 
     public int getInputLayerSize() {

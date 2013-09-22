@@ -10,6 +10,7 @@ import pl.agh.neunet.neighborhood.NeighborhoodFunction;
 import pl.agh.neunet.neighborhood.NeighborhoodFunctionType;
 
 public class NetworkProperties {
+    private static boolean customWeights;
     private static boolean kohonen;
     private static boolean grossberg;
 
@@ -20,6 +21,8 @@ public class NetworkProperties {
     private static double customWeightsLowerValue;
     private static double customWeightsUpperValue;
 
+    private static String inputWeightsFilePath;
+    private static String outputWeightsFilePath;
     private static String kohonenLearningFilePath;
 
     private static NeighborhoodFunction kohonenNeighborhoodFunction;
@@ -27,6 +30,7 @@ public class NetworkProperties {
 
     private static ActivationFunction[] activationFunctions;
 
+    private static List<Integer> layersSizes = new ArrayList<Integer>();
     private static List<Integer> kohonenEpochsNumbers = new ArrayList<Integer>();
     private static List<Integer> grossbergEpochsNumbers = new ArrayList<Integer>();
 
@@ -34,6 +38,7 @@ public class NetworkProperties {
     private static List<Double> grossbergLearningRates = new ArrayList<Double>();
 
     public static void setNetworkProperties(Properties prop) {
+        customWeights = Boolean.parseBoolean(prop.getProperty("customWeights"));
         kohonen = Boolean.parseBoolean(prop.getProperty("kohonen.enable"));
         grossberg = Boolean.parseBoolean(prop.getProperty("grossberg.enable"));
 
@@ -44,16 +49,18 @@ public class NetworkProperties {
         customWeightsLowerValue = Double.parseDouble(prop.getProperty("customWeightsLowerValue"));
         customWeightsUpperValue = Double.parseDouble(prop.getProperty("customWeightsUpperValue"));
 
+        inputWeightsFilePath = prop.getProperty("inputWeightsFilepath");
+        outputWeightsFilePath = prop.getProperty("outputWeightsFilepath");
         kohonenLearningFilePath = prop.getProperty("kohonen.learningFile");
 
         kohonenNeighborhoodFunction = NeighborhoodFunctionType.valueOf(prop.getProperty("kohonen.neighborhoodFunction")).getNeighborhoodFunction();
         testNeighborhoodFunction = NeighborhoodFunctionType.valueOf(prop.getProperty("test.neighborhoodFunction")).getNeighborhoodFunction();
 
-        parseActivationFunctions(prop);
-        parseEpochsNumbersAndLearningRates(prop);
+        parseEnums(prop);
+        parseLists(prop);
     }
 
-    private static void parseActivationFunctions(Properties prop) {
+    private static void parseEnums(Properties prop) {
         String[] functionsNames = prop.getProperty("activationFunctions").split(";");
 
         activationFunctions = new ActivationFunction[functionsNames.length + 1];
@@ -63,25 +70,33 @@ public class NetworkProperties {
         }
     }
 
-    private static void parseEpochsNumbersAndLearningRates(Properties prop) {
+    private static void parseLists(Properties prop) {
+        String[] rawLayersSizes = prop.getProperty("layersNeurons").split(";");
         String[] rawKohonenEpochsNumbers = prop.getProperty("kohonen.epochsNumbers").split(";");
         String[] rawGrossbergEpochNumbers = prop.getProperty("grossberg.epochsNumbers").split(";");
 
         String[] rawKohonenLearningRates = prop.getProperty("kohonen.learningRates").split(";");
         String[] rawGrossbergLearningRates = prop.getProperty("grossberg.learningRates").split(";");
 
-        for (String rawEpochsNumber : rawKohonenEpochsNumbers) {
-            kohonenEpochsNumbers.add(Integer.parseInt(rawEpochsNumber));
+        for (String s : rawLayersSizes) {
+            layersSizes.add(Integer.parseInt(s));
         }
-        for (String rawGrossEpochsNumber : rawGrossbergEpochNumbers) {
-            grossbergEpochsNumbers.add(Integer.parseInt(rawGrossEpochsNumber));
+        for (String s : rawKohonenEpochsNumbers) {
+            kohonenEpochsNumbers.add(Integer.parseInt(s));
         }
-        for (String rawLearningRate : rawKohonenLearningRates) {
-            kohonenLearningRates.add(Double.parseDouble(rawLearningRate));
+        for (String s : rawGrossbergEpochNumbers) {
+            grossbergEpochsNumbers.add(Integer.parseInt(s));
         }
-        for (String rawGrossLearningRate : rawGrossbergLearningRates) {
-            grossbergLearningRates.add(Double.parseDouble(rawGrossLearningRate));
+        for (String s : rawKohonenLearningRates) {
+            kohonenLearningRates.add(Double.parseDouble(s));
         }
+        for (String s : rawGrossbergLearningRates) {
+            grossbergLearningRates.add(Double.parseDouble(s));
+        }
+    }
+
+    public static boolean isCustomWeights() {
+        return customWeights;
     }
 
     public static boolean isKohonen() {
@@ -112,6 +127,14 @@ public class NetworkProperties {
         return customWeightsUpperValue;
     }
 
+    public static String getInputWeightsFilePath() {
+        return inputWeightsFilePath;
+    }
+
+    public static String getOutputWeightsFilePath() {
+        return outputWeightsFilePath;
+    }
+
     public static String getKohonenLearningFilePath() {
         return kohonenLearningFilePath;
     }
@@ -126,6 +149,10 @@ public class NetworkProperties {
 
     public static ActivationFunction[] getActivationFunctions() {
         return activationFunctions;
+    }
+
+    public static List<Integer> getLayersSizes() {
+        return layersSizes;
     }
 
     public static List<Integer> getKohonenEpochsNumbers() {
