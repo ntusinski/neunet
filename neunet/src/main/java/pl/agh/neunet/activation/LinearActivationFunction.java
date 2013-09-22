@@ -4,10 +4,10 @@ import pl.agh.neunet.structure.NetworkConnection;
 import pl.agh.neunet.structure.Neuron;
 
 public class LinearActivationFunction implements ActivationFunction {
-	public double getInputSignal(Neuron neuron) {
+	public double getErrorSignal(Neuron neuron) {
 		double value = 0.0;
 		for (NetworkConnection connection : neuron.getFrontConnections()) {
-			value += connection.getOutputNeuron().getInputSignal()
+			value += connection.getOutputNeuron().getErrorSignal()
 					* connection.getWeight();
 		}
 		return value;

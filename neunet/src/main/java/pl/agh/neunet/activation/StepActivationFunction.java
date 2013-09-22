@@ -4,7 +4,7 @@ import pl.agh.neunet.structure.NetworkConnection;
 import pl.agh.neunet.structure.Neuron;
 
 public class StepActivationFunction implements ActivationFunction {
-	public double getInputSignal(Neuron neuron) {
+	public double getErrorSignal(Neuron neuron) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
