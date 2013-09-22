@@ -219,34 +219,33 @@ public class NeuralNetwork {
     }
 
     public void testNetwork() {
-        if (NetworkProperties.isGrossberg()) {
-            testNetworkGrossberg();
-        } else {
-            
+        Scanner scan = new Scanner(System.in);
+        List<Double> inputData = new ArrayList<Double>();
+
+        System.out.println("Enter input vector in size of " + layers.get(0).getNeurons().size());
+        for (int i = 0; i < layers.get(0).getNeurons().size(); i++) {
+            inputData.add(scan.nextDouble());
         }
+
+        for (int i = 0; i < layers.get(0).getNeurons().size(); i++) {
+            Neuron inputLayerNeuron = layers.get(0).getNeurons().get(i);
+            inputLayerNeuron.setOutputSignal(inputData.get(i));
+        }
+
+        List<Double> outputData = NetworkProperties.isGrossberg() ? testNetworkGrossberg(inputData) : testNetworkWithDefaultSettings();
+        System.out.println("Result is: " + outputData);
+        System.out.println();
     }
 
-    public void testNetworkGrossberg() {
-        List<Double> inputVector = new ArrayList<Double>();
-        Scanner scan = new Scanner(System.in);
-        List<Double> outputVector = new ArrayList<Double>();
+    private List<Double> testNetworkWithDefaultSettings() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        NetworkLayer inputLayer = layers.get(0);
-        Neuron inputLayerNeuron;
-
-        System.out.println("Enter input vector in size of " + getInputLayerSize());
-        for (int i = 0; i < getInputLayerSize(); i++) {
-            inputVector.add(scan.nextDouble());
-        }
-
-        for (int i = 0; i < getInputLayerSize(); i++) {
-            inputLayerNeuron = inputLayer.getNeurons().get(i);
-            inputLayerNeuron.setOutputSignal(inputVector.get(i));
-        }
-
+    public List<Double> testNetworkGrossberg(List<Double> inputData) {
         Neuron winnerNeuron = NetworkProperties.getTestNeighborhoodFunction().getWinnerNeuron(layers.get(1).getNeurons());
 
-        System.out.print("back connections: ");
+        System.out.print("Back connections: ");
         for (NetworkConnection conn : winnerNeuron.getBackConnections()) {
             System.out.print(conn.getWeight() + " ");
         }
@@ -260,17 +259,13 @@ public class NeuralNetwork {
             }
         }
 
+        List<Double> outputData = new ArrayList<Double>();
         for (Neuron neuron : layers.get(2).getNeurons()) {
             neuron.getBias().setValue(0.0);
             neuron.updateOutputSignal();
-            outputVector.add(neuron.getOutputSignal());
+            outputData.add(neuron.getOutputSignal());
         }
 
-        System.out.println("Result is: " + outputVector);
-        System.out.println();
-    }
-
-    public int getInputLayerSize() {
-        return layers.get(0).getLayerSize();
+        return outputData;
     }
 }
