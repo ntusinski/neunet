@@ -25,6 +25,7 @@ public class NetworkProperties {
     private static String inputWeightsFilePath;
     private static String outputWeightsFilePath;
     private static String kohonenLearningFilePath;
+    private static String bpLearningFilePath;
 
     private static NeighborhoodFunction kohonenNeighborhoodFunction;
     private static NeighborhoodFunction testNeighborhoodFunction;
@@ -34,9 +35,11 @@ public class NetworkProperties {
     private static List<Integer> layersSizes = new ArrayList<Integer>();
     private static List<Integer> kohonenEpochsNumbers = new ArrayList<Integer>();
     private static List<Integer> grossbergEpochsNumbers = new ArrayList<Integer>();
+    private static List<Integer> bpEpochsNumbers = new ArrayList<Integer>();
 
     private static List<Double> kohonenLearningRates = new ArrayList<Double>();
     private static List<Double> grossbergLearningRates = new ArrayList<Double>();
+    private static List<Double> bpLearningRates = new ArrayList<Double>();
 
     public static void setNetworkProperties(Properties prop) {
         customWeights = Boolean.parseBoolean(prop.getProperty("customWeights"));
@@ -54,6 +57,7 @@ public class NetworkProperties {
         inputWeightsFilePath = prop.getProperty("inputWeightsFilepath");
         outputWeightsFilePath = prop.getProperty("outputWeightsFilepath");
         kohonenLearningFilePath = prop.getProperty("kohonen.learningFile");
+        bpLearningFilePath = prop.getProperty("bp.learningFile");
 
         kohonenNeighborhoodFunction = NeighborhoodFunctionType.valueOf(prop.getProperty("kohonen.neighborhoodFunction")).getNeighborhoodFunction();
         testNeighborhoodFunction = NeighborhoodFunctionType.valueOf(prop.getProperty("test.neighborhoodFunction")).getNeighborhoodFunction();
@@ -76,9 +80,11 @@ public class NetworkProperties {
         String[] rawLayersSizes = prop.getProperty("layersNeurons").split(";");
         String[] rawKohonenEpochsNumbers = prop.getProperty("kohonen.epochsNumbers").split(";");
         String[] rawGrossbergEpochNumbers = prop.getProperty("grossberg.epochsNumbers").split(";");
+        String[] rawBpEpochNumbers = prop.getProperty("bp.epochsNumbers").split(";");
 
         String[] rawKohonenLearningRates = prop.getProperty("kohonen.learningRates").split(";");
         String[] rawGrossbergLearningRates = prop.getProperty("grossberg.learningRates").split(";");
+        String[] rawBpLearningRates = prop.getProperty("bp.learningRates").split(";");
 
         for (String s : rawLayersSizes) {
             layersSizes.add(Integer.parseInt(s));
@@ -89,11 +95,18 @@ public class NetworkProperties {
         for (String s : rawGrossbergEpochNumbers) {
             grossbergEpochsNumbers.add(Integer.parseInt(s));
         }
+        for (String s : rawBpEpochNumbers) {
+            bpEpochsNumbers.add(Integer.parseInt(s));
+        }
+
         for (String s : rawKohonenLearningRates) {
             kohonenLearningRates.add(Double.parseDouble(s));
         }
         for (String s : rawGrossbergLearningRates) {
             grossbergLearningRates.add(Double.parseDouble(s));
+        }
+        for (String s : rawBpLearningRates) {
+            bpLearningRates.add(Double.parseDouble(s));
         }
     }
 
@@ -145,6 +158,10 @@ public class NetworkProperties {
         return kohonenLearningFilePath;
     }
 
+    public static String getBpLearningFilePath() {
+        return bpLearningFilePath;
+    }
+
     public static NeighborhoodFunction getKohonenNeighborhoodFunction() {
         return kohonenNeighborhoodFunction;
     }
@@ -169,11 +186,19 @@ public class NetworkProperties {
         return grossbergEpochsNumbers;
     }
 
+    public static List<Integer> getBpEpochsNumbers() {
+        return bpEpochsNumbers;
+    }
+
     public static List<Double> getKohonenLearningRates() {
         return kohonenLearningRates;
     }
 
     public static List<Double> getGrossbergLearningRates() {
         return grossbergLearningRates;
+    }
+
+    public static List<Double> getBpLearningRates() {
+        return bpLearningRates;
     }
 }

@@ -3,6 +3,7 @@ package pl.agh.neunet.trainer;
 import java.util.List;
 import java.util.Random;
 
+import pl.agh.neunet.structure.NetworkConnection;
 import pl.agh.neunet.structure.NetworkLayer;
 import pl.agh.neunet.structure.Neuron;
 
@@ -14,12 +15,14 @@ public class BackPropagationTrainer {
 
         for (int epoch = 0; epoch < epochsNumber; epoch++) {
             int epochLength = epochsLengths.get(epoch);
+            double learningRate = learningRates.get(epoch);
             for (int epochItNumber = 0; epochItNumber < epochLength; epochItNumber++) {
                 int caseNumber = Math.abs(random.nextInt()) % learningInputData.size();
                 setInputNeuronSignalsAsInTrainingData(learningInputData.get(caseNumber), layers.get(0).getNeurons());
                 calculateOutputSignalsForAllNeurons(layers);
                 setOutputNeuronSignalsAsInTrainingData(learningOutputData.get(caseNumber), layers.get(layers.size() - 1).getNeurons());
                 calculateErrorSignalsForAllNeurons(layers);
+                updateWeights(layers, learningRate);
             }
         }
     }
@@ -49,6 +52,16 @@ public class BackPropagationTrainer {
         for (int i = layers.size() - 2; i >= 0; i--) {
             for (Neuron neuron : layers.get(i).getNeurons()) {
                 neuron.updateErrorSignal();
+            }
+        }
+    }
+
+    private void updateWeights(List<NetworkLayer> layers, double learningRate) {
+        for (int i = 1; i < layers.size(); i++) {
+            for (Neuron neuron : layers.get(i).getNeurons()) {
+                for (NetworkConnection c : neuron.getBackConnections()) {
+                    c.setWeight(c.getWeight() + learningRate * neuron.getErrorSignal() * c.getInputNeuron().getOutputSignal());
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ public final class PropertiesUtil {
 
         prop.setProperty("hiddenLayers", "1");
         prop.setProperty("layersNeurons", "3;9;1");
-        prop.setProperty("activationFunctions", "SIGMOIDAL;SIGMOIDAL");
+        prop.setProperty("activationFunctions", "LINEAR;LINEAR");
 
         prop.setProperty("customWeights", "false");
         prop.setProperty("customWeightsLowerValue", "0.0");
@@ -23,19 +23,23 @@ public final class PropertiesUtil {
         prop.setProperty("conscience.initConscience", "0.8");
         prop.setProperty("conscience.pmin", "0.06");
 
-        prop.setProperty("bp.enable", "true");
         prop.setProperty("kohonen.enable", "false");
         prop.setProperty("grossberg.enable", "false");
+        prop.setProperty("bp.enable", "true");
 
         prop.setProperty("kohonen.neighborhoodFunction", "CONSCIENCE");
         prop.setProperty("test.neighborhoodFunction", "CONTEST");
 
         prop.setProperty("kohonen.epochsNumbers", "8000;8000;8000;8000");
         prop.setProperty("grossberg.epochsNumbers", "2000;4000;8000;16000;32000");
+        prop.setProperty("bp.epochsNumbers", "8000;8000;8000;8000");
 
         prop.setProperty("kohonen.learningRates", "0.06;0.03;0.015;0.0075");
         prop.setProperty("grossberg.learningRates", "0.3;0.15;0.075;0.0185;0.00117");
+        prop.setProperty("bp.learningRates", "0.06;0.03;0.015;0.0075");
+        
         prop.setProperty("kohonen.learningFile", "learning.csv");
+        prop.setProperty("bp.learningFile", "learning.csv");
 
         try {
             prop.storeToXML(new FileOutputStream("neunet.properties"), null);

@@ -30,6 +30,14 @@ public class NeuralNetworkTrainer {
             }
         }
 
+        if (NetworkProperties.isBp()) {
+            CsvReader reader = new CsvReader(NetworkProperties.getBpLearningFilePath());
+            while ((line = reader.readNextLine()) != null) {
+                learningInputData.add(line);
+                learningOutputData.add(reader.readNextLine());
+            }
+        }
+
         if (NetworkProperties.isKohonen()) {
             new KohonenTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), NetworkProperties.getKohonenEpochsNumbers(),
                     NetworkProperties.getKohonenLearningRates(), NetworkProperties.getKohonenNeighborhoodFunction(), learningInputData);
@@ -48,6 +56,11 @@ public class NeuralNetworkTrainer {
         if (NetworkProperties.isGrossberg()) {
             new GrossbergTrainer().learn(layers.get(0).getNeurons(), layers.get(1).getNeurons(), NetworkProperties.getGrossbergEpochsNumbers(),
                     NetworkProperties.getGrossbergLearningRates(), NetworkProperties.getKohonenNeighborhoodFunction(), learningInputData, learningOutputData);
+        }
+
+        if (NetworkProperties.isBp()) {
+            new BackPropagationTrainer().learn(layers, learningInputData, learningOutputData, NetworkProperties.getBpEpochsNumbers(),
+                    NetworkProperties.getBpLearningRates());
         }
     }
 
