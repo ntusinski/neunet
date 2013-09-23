@@ -44,7 +44,7 @@ public class BackPropagationTrainer {
     private void setOutputNeuronSignalsAsInTrainingData(List<Double> currentCaseData, List<Neuron> outputNeurons) {
         for (int i = 0; i < outputNeurons.size(); i++) {
             Neuron outputNeuron = outputNeurons.get(i);
-            outputNeuron.setErrorSignal(currentCaseData.get(i) - outputNeuron.getOutputSignal());
+            outputNeuron.setErrorSignal((currentCaseData.get(i) - outputNeuron.getOutputSignal()) * outputNeuron.getOutputSignal());
         }
     }
 
@@ -61,10 +61,9 @@ public class BackPropagationTrainer {
             for (Neuron neuron : layers.get(i).getNeurons()) {
                 neuron.getBias().setValue(neuron.getBias().getValue() + learningRate * neuron.getErrorSignal());
                 for (NetworkConnection c : neuron.getBackConnections()) {
-                    //System.out.print("Update of weights, old value: " + c.getWeight());
-                    c.setWeight(c.getWeight() + learningRate * neuron.getErrorSignal() * c.getInputNeuron().getOutputSignal());
-                    //System.out.println(", new value: " + c.getWeight());
+                    c.setWeight(c.getWeight() + learningRate * neuron.getErrorSignal() * c.getInputNeuron().getOutputSignal()); // ok
                 }
+                // neuron.updateOutputSignal(); // ???
             }
         }
     }

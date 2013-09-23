@@ -9,7 +9,6 @@ public class SigmoidalActivationFunction implements ActivationFunction {
         for (NetworkConnection connection : neuron.getFrontConnections()) {
             value += connection.getOutputNeuron().getErrorSignal() * connection.getWeight();
         }
-        value = 1.0 / (1.0 + Math.pow(Math.E, -value));
         return value;
     }
 
