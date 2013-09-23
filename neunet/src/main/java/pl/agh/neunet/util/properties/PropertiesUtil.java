@@ -10,8 +10,8 @@ public final class PropertiesUtil {
         Properties prop = new LinkedProperties();
 
         prop.setProperty("hiddenLayers", "1");
-        prop.setProperty("layersNeurons", "3;9;1");
-        prop.setProperty("activationFunctions", "LINEAR;LINEAR");
+        prop.setProperty("layersNeurons", "2;2;1");
+        prop.setProperty("activationFunctions", "SIGMOIDAL;SIGMOIDAL");
 
         prop.setProperty("customWeights", "false");
         prop.setProperty("customWeightsLowerValue", "0.0");
